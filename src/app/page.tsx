@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPostsBySection } from "@/lib/posts";
 import { ArrowRight, Play, Eye, Flame } from "lucide-react";
+import { AdBanner } from "@/components/ads/AdBanner";
 
 export default async function Home() {
   // Fetch all sections in parallel
@@ -51,8 +52,13 @@ export default async function Home() {
         </div>
       )}
 
-      <main className="max-w-[1600px] mx-auto px-4 md:px-8 pt-10">
+      <main className="max-w-[1600px] mx-auto px-4 md:px-8 pt-6">
         
+        {/* TOP AD LEADERBOARD */}
+        <div className="flex justify-center mb-8">
+           <AdBanner type="leaderboard" className="my-0" />
+        </div>
+
         {/* 2. MAIN EDITORIAL GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 border-b border-zinc-200 dark:border-zinc-800 pb-16">
           
@@ -192,6 +198,11 @@ export default async function Home() {
             ))}
           </div>
         </section>
+
+        {/* IN-FEED AD */}
+        <div className="flex justify-center py-10">
+           <AdBanner type="in-feed" className="my-0" />
+        </div>
 
         {/* 4. MULTI-SECTION GRID (Ledger & Style) */}
         <section className="py-20 grid grid-cols-1 lg:grid-cols-12 gap-16 border-b border-zinc-200 dark:border-zinc-800">
