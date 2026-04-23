@@ -64,19 +64,24 @@ export default async function Home() {
             <div className="flex items-center justify-between border-b border-black dark:border-white pb-2 mb-6">
                <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-900 dark:text-zinc-100">Latest Coverage</h3>
             </div>
-            {sideStories.map((post: any, i: number) => (
-              <article key={i} className="group pb-8 border-b border-zinc-50 dark:border-zinc-900 last:border-0 last:pb-0">
-                <Link href={`/article/${post._id}`}>
+              <article key={i} className="group pb-8 border-b border-zinc-50 dark:border-zinc-900 last:border-0 last:pb-0 flex flex-row lg:flex-col gap-4">
+                <Link href={`/article/${post._id}`} className="flex-1">
                   <span className="text-[10px] font-bold uppercase text-red-700 dark:text-red-500 tracking-widest mb-2 block">{post.tag || "Archive"}</span>
-                  <h4 className="font-serif font-bold text-[20px] leading-[1.15] tracking-tight group-hover:text-zinc-500 transition-colors mb-3">
+                  <h4 className="font-serif font-bold text-[18px] leading-[1.15] tracking-tight group-hover:text-zinc-500 transition-colors mb-2">
                     {post.title}
                   </h4>
-                  <p className="text-[14px] text-zinc-500 dark:text-zinc-400 line-clamp-3 leading-relaxed font-sans">
-                    {post.excerpt || post.description}
-                  </p>
                 </Link>
+                {post.imageUrl && (
+                  <div className="relative w-24 h-24 lg:w-full lg:aspect-[3/2] overflow-hidden bg-zinc-100 dark:bg-zinc-900 flex-shrink-0">
+                    <Image 
+                      src={post.imageUrl} 
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                )}
               </article>
-            ))}
           </div>
 
           {/* CENTER: HERO (Dominant visual & typography) */}
@@ -84,6 +89,17 @@ export default async function Home() {
             {hero && (
               <article className="group mb-16 border-b border-zinc-100 dark:border-zinc-900 pb-12">
                 <Link href={`/article/${hero._id}`}>
+                  {hero.imageUrl && (
+                    <div className="relative aspect-[16/9] mb-8 overflow-hidden bg-zinc-100 dark:bg-zinc-900 group-hover:brightness-95 transition-all">
+                      <Image 
+                        src={hero.imageUrl} 
+                        alt={hero.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        priority
+                      />
+                    </div>
+                  )}
                   <h2 className="font-serif text-[42px] md:text-[56px] font-black leading-[0.95] tracking-tighter mb-6 group-hover:text-red-700 transition-colors">
                     {hero.title}
                   </h2>
@@ -104,6 +120,16 @@ export default async function Home() {
               <article className="group pt-10 border-t-2 border-black dark:border-white flex flex-col md:flex-row gap-8">
                 <div className="flex-1">
                    <Link href={`/article/${secondaryHero._id}`}>
+                      {secondaryHero.imageUrl && (
+                        <div className="relative aspect-[4/3] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                          <Image 
+                            src={secondaryHero.imageUrl} 
+                            alt={secondaryHero.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
+                      )}
                       <h3 className="font-serif font-black text-[24px] leading-[1.1] mb-4 group-hover:text-red-700 transition-colors">
                         {secondaryHero.title}
                       </h3>
@@ -112,7 +138,6 @@ export default async function Home() {
                       </p>
                    </Link>
                 </div>
-
               </article>
             )}
           </div>
@@ -151,7 +176,11 @@ export default async function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                {ledgerStories.map((post: any, i: number) => (
                  <article key={i} className="flex gap-5 group border-b border-zinc-100 dark:border-zinc-900 pb-6 last:border-0 last:pb-0">
-
+                    {post.imageUrl && (
+                      <div className="relative w-28 h-20 overflow-hidden bg-zinc-100 dark:bg-zinc-900 flex-shrink-0">
+                        <Image src={post.imageUrl} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform" />
+                      </div>
+                    )}
                     <div className="flex-1">
                        <Link href={`/article/${post._id}`}>
                           <h4 className="font-serif font-bold text-[17px] leading-snug group-hover:text-red-700 transition-colors mb-2">
@@ -171,7 +200,11 @@ export default async function Home() {
              <div className="space-y-10">
                 {style.slice(0, 3).map((post: any, i: number) => (
                    <article key={i} className="group">
-
+                     {post.imageUrl && (
+                       <div className="relative aspect-[16/9] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                          <Image src={post.imageUrl} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                       </div>
+                     )}
                      <Link href={`/article/${post._id}`}>
                        <h4 className="font-serif font-black text-[20px] leading-tight group-hover:text-red-700 transition-colors tracking-tight">
                          {post.title}
@@ -222,7 +255,11 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
             {[...ledger, ...politics, ...style].slice(4, 12).map((post: any, i: number) => (
               <article key={i} className="group flex flex-col">
-
+                {post.imageUrl && (
+                  <div className="relative aspect-[3/2] mb-5 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                    <Image src={post.imageUrl} alt={post.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </div>
+                )}
                 <Link href={`/article/${post._id}`}>
                   <h4 className="font-serif font-bold text-[18px] leading-tight group-hover:text-red-700 transition-colors mb-3">
                     {post.title}
