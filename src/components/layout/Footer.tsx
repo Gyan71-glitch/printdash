@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Globe, MessageSquare, Rss } from 'lucide-react'
 
 const footerLinks = {
@@ -30,11 +31,15 @@ export function Footer() {
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
           <div className="lg:col-span-2">
-            <Link href="/" className="flex flex-col items-start mb-6">
-              <h2 className="font-serif text-3xl font-bold tracking-tight uppercase">
-                The Indianberg
-              </h2>
-              <span className="text-xs font-sans tracking-[0.2em] text-zinc-400 uppercase mt-1">
+            <Link href="/" className="flex flex-col items-start mb-6 no-underline">
+              <Image 
+                src="/logo.png" 
+                alt="The Indianberg" 
+                width={200} 
+                height={50} 
+                className="h-10 w-auto invert" 
+              />
+              <span className="text-xs font-sans tracking-[0.2em] text-zinc-400 uppercase mt-2">
                 Breaking barriers, shaping narrative
               </span>
             </Link>

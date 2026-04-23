@@ -43,7 +43,11 @@ export function StockTicker() {
   }, [])
 
   return (
-    <div className="w-full overflow-hidden bg-black text-zinc-100 dark:bg-zinc-950 border-b border-zinc-800 py-1.5 flex text-[13px] font-mono select-none">
+    <div className="w-full overflow-hidden bg-[#001D3D] text-white border-y border-[#003566] py-2 flex items-center text-[12px] font-sans font-bold select-none uppercase tracking-tighter relative z-10">
+      <div className="bg-[#003566] px-4 py-1 z-20 flex items-center gap-2 border-r border-[#001D3D] flex-shrink-0 min-w-[120px] justify-center">
+        <span className="text-yellow-400">CNBC</span>
+        <span className="text-[10px] text-zinc-300">REAL-TIME</span>
+      </div>
       <motion.div
         className="flex whitespace-nowrap min-w-max items-center"
         animate={{
@@ -52,20 +56,20 @@ export function StockTicker() {
         transition={{
           repeat: Infinity,
           ease: "linear",
-          duration: 35
+          duration: 40
         }}
       >
         {[...stocks, ...stocks].map((stock, i) => {
           const isPositive = stock.change >= 0;
           return (
-            <div key={`${stock.symbol}-${i}`} className="flex items-center mx-6 gap-2">
-              <span className="font-bold text-white drop-shadow-md">{stock.symbol}</span>
-              <span className="text-zinc-300">{stock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <div key={`${stock.symbol}-${i}`} className="flex items-center mx-6 gap-3">
+              <span className="text-white">{stock.symbol}</span>
+              <span className="text-zinc-100 font-mono">{stock.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               <span className={cn(
-                "flex items-center font-bold tracking-tight",
-                isPositive ? "text-emerald-500" : "text-red-500"
+                "flex items-center",
+                isPositive ? "text-emerald-400" : "text-red-400"
               )}>
-                {isPositive ? <TrendingUp className="w-[14px] h-[14px] mr-1" /> : <TrendingDown className="w-[14px] h-[14px] mr-1" />}
+                {isPositive ? "▲" : "▼"}
                 {Math.abs(stock.changePercent).toFixed(2)}%
               </span>
             </div>

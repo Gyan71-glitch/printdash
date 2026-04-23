@@ -63,10 +63,9 @@ export function Navbar() {
   return (
     <>
       {/* ─────────────── MAIN HEADER ─────────────── */}
-      <header className="w-full bg-[#FCFBF9] dark:bg-[#0A0A0A] font-sans">
-
+      <header className="w-full bg-white dark:bg-black font-sans relative z-40 border-b border-zinc-200 dark:border-zinc-800">
         {/* Top Utility Row */}
-        <div className="border-b border-zinc-200 dark:border-zinc-800">
+        <div className="border-b border-zinc-100 dark:border-zinc-900">
           <div className="flex items-center justify-between px-4 md:px-8 py-2.5 max-w-[1600px] mx-auto">
             <div className="flex items-center gap-3">
               <button
@@ -159,19 +158,22 @@ export function Navbar() {
           </div>
         </div>
 
-        <div className="py-6 md:py-8 text-center border-b border-zinc-200 dark:border-zinc-800">
-          <Link href="/" className="inline-block group text-center">
-            <h1 className="font-serif text-[42px] md:text-[68px] lg:text-[84px] font-black tracking-tighter leading-none text-zinc-950 dark:text-white group-hover:opacity-80 transition-opacity duration-500 select-none">
-              The Indianberg
-            </h1>
-            <p className="font-serif italic text-[14px] md:text-[18px] text-zinc-500 dark:text-zinc-400 mt-2 tracking-widest uppercase">
+        <div className="py-4 md:py-6 text-center border-b border-zinc-200 dark:border-zinc-800">
+          <Link href="/" className="inline-block group text-center no-underline">
+            <Image 
+              src="/logo.png" 
+              alt="The Indianberg" 
+              width={1000} 
+              height={250} 
+              className="h-20 md:h-36 lg:h-44 w-auto mx-auto dark:invert transition-all duration-500"
+              priority
+            />
+            <p className="font-serif italic text-[15px] md:text-[16px] text-zinc-600 dark:text-zinc-400 mt-3 tracking-[0.05em] leading-none">
               Breaking barriers, shaping narrative
             </p>
           </Link>
         </div>
 
-        {/* Financial Ticker moved here */}
-        <StockTicker />
 
         {/* Category Nav - Now Scrollable */}
         <nav className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black">
@@ -217,6 +219,10 @@ export function Navbar() {
           </div>
         </div>
 
+        {/* Financial Ticker at the bottom of header */}
+        <div className="mb-6 md:mb-10">
+          <StockTicker />
+        </div>
       </header>
 
       {/* ─────────────── STICKY MINI HEADER ─────────────── */}
@@ -227,7 +233,7 @@ export function Navbar() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -80, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
-            className="fixed top-0 inset-x-0 z-50 bg-[#FCFBF9] dark:bg-[#0A0A0A] border-b-2 border-black dark:border-white shadow-lg"
+            className="fixed top-0 inset-x-0 z-50 bg-white dark:bg-[#0A0A0A] border-b-2 border-black dark:border-white shadow-lg"
           >
             <div className="flex items-center justify-between px-4 md:px-8 py-3 max-w-[1600px] mx-auto">
               {/* Left */}
@@ -236,9 +242,13 @@ export function Navbar() {
                   <Menu className="w-5 h-5 hover:text-red-700 transition-colors" />
                 </button>
                 <Link href="/">
-                  <span className="font-serif font-black text-[22px] tracking-tighter hover:opacity-75 transition-opacity">
-                    The Indianberg
-                  </span>
+                  <Image 
+                    src="/logo.png" 
+                    alt="The Indianberg" 
+                    width={180} 
+                    height={40} 
+                    className="h-6 md:h-8 w-auto dark:invert"
+                  />
                 </Link>
               </div>
 
@@ -286,12 +296,18 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-              className="fixed inset-y-0 left-0 z-[70] w-[380px] max-w-[90vw] bg-[#FCFBF9] dark:bg-[#0A0A0A] flex flex-col border-r border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-y-auto"
+              className="fixed inset-y-0 left-0 z-[70] w-[380px] max-w-[90vw] bg-white dark:bg-[#0A0A0A] flex flex-col border-r border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-y-auto"
             >
               {/* Drawer Header */}
               <div className="flex items-center justify-between px-7 py-5 border-b-2 border-black dark:border-white flex-shrink-0">
                 <Link href="/" onClick={() => setIsMenuOpen(false)}>
-                  <span className="font-serif font-black text-2xl tracking-tighter">The Indianberg</span>
+                  <Image 
+                    src="/logo.png" 
+                    alt="The Indianberg" 
+                    width={150} 
+                    height={40} 
+                    className="h-7 w-auto dark:invert"
+                  />
                 </Link>
                 <motion.button
                   onClick={() => setIsMenuOpen(false)}

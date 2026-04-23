@@ -117,7 +117,7 @@ export default async function ArticlePage({ params }: Props) {
             <article className="flex-1 min-w-0">
               {/* Feature Image */}
               <figure className="hidden md:block w-full mb-12">
-                <div className="relative w-full aspect-[16/9] overflow-hidden bg-zinc-100 dark:bg-zinc-900 group">
+                <div className="relative w-full aspect-[21/9] max-h-[450px] overflow-hidden bg-zinc-100 dark:bg-zinc-900 group">
                   <Image 
                     src={post.imageUrl || defaultImage} 
                     alt={post.title}

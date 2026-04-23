@@ -16,6 +16,8 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
 });
 
+
+
 export const metadata: Metadata = {
   title: "The Indianberg | Breaking barriers, shaping narrative",
   description: "Advanced investigative reporting on modern cyber crime, forensic analysis, and the global digital underground.",
@@ -35,8 +37,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-white dark:bg-black text-black dark:text-zinc-100">
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
-          forcedTheme="dark"
+          defaultTheme="light"
+          enableSystem
           disableTransitionOnChange
         >
           <AuthProvider>

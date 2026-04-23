@@ -9,16 +9,24 @@
   --color-red-ticker: #dc2626;
   --font-sans: var(--font-inter);
   --font-serif: var(--font-playfair);
+  
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
 }
 
 :root {
-  --background: #FCFBF9; /* Slightly off-white for less eye fatigue */
-  --foreground: #1A1A1A; /* Not pure black for better long-form reading */
+  --background: #FFFFFF; 
+  --foreground: #111111;
+  --wp-gray: #767676;
 }
 
 .dark {
   --background: #0D0D0D; 
-  --foreground: #E4E4E7; /* Soft zinc-200 foreground to reduce glow/eyestrain */
+  --foreground: #F4F4F5;
 }
 
 html {
@@ -28,6 +36,8 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
