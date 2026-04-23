@@ -11,9 +11,8 @@ export async function GET() {
     browser = await puppeteer.launch({
       args: chromium.args,
       executablePath: await chromium.executablePath(),
-      headless: true,
+      headless: true as any,
     });
-
 
     const page = await browser.newPage();
 
@@ -102,4 +101,3 @@ export async function GET() {
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
-
