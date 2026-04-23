@@ -37,7 +37,7 @@ export function Navbar() {
     // Fetch dynamic categories/tags from CMS
     const fetchTags = async () => {
       try {
-        const res = await fetch('/api/seed?tags=true'); // I'll need to create this or use another endpoint
+        const res = await fetch('/api/seed?tags=true'); 
         const data = await res.json();
         if (data.success) {
           setDynamicCategories(data.tags);
@@ -167,7 +167,7 @@ export function Navbar() {
               height={250}
               priority
               unoptimized
-              className="h-14 md:h-20 lg:h-28 w-auto mx-auto transition-all duration-500"
+              className="h-16 md:h-28 lg:h-32 w-auto mx-auto dark:invert transition-all duration-500"
             />
 
             <p className="font-serif italic text-[13px] md:text-[14px] text-zinc-600 dark:text-zinc-400 mt-2 tracking-[0.05em] leading-none">

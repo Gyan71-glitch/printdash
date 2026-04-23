@@ -129,10 +129,10 @@ export default async function Home() {
                   <p className="font-serif italic text-lg md:text-xl lg:text-[24px] text-zinc-700 dark:text-zinc-300 mb-6 lg:mb-8 leading-snug md:leading-[1.2] max-w-[95%]">
                     {hero.excerpt || hero.description}
                   </p>
-                  <div className="flex items-center gap-3 md:gap-4 text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-zinc-500 border-t border-zinc-100 dark:border-zinc-900 pt-4 lg:pt-5">
-                    <span className="text-zinc-950 dark:text-white">By {hero.author || "The Indian Berg Staff"}</span>
-                    <span className="text-zinc-300">|</span>
-                    <span className="italic font-serif normal-case tracking-normal text-zinc-500">{hero.timeAgo || "Updated moments ago"}</span>
+                  <div className="flex items-center gap-4 text-[12px] font-bold uppercase tracking-widest text-zinc-400 border-t border-zinc-100 dark:border-zinc-900 pt-4">
+                    <span className="text-zinc-900 dark:text-zinc-100">By {hero.author || "The Indianberg Staff"}</span>
+                    <span>•</span>
+                    <span className="italic">{hero.timeAgo || "Updated moments ago"}</span>
                   </div>
                 </Link>
               </article>
