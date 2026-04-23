@@ -161,12 +161,13 @@ export function Navbar() {
         <div className="py-4 md:py-6 text-center border-b border-zinc-200 dark:border-zinc-800">
           <Link href="/" className="inline-block group text-center no-underline">
             <Image 
-              src="/logo.png" 
+              src="/Layer 0.png" 
               alt="The Indianberg" 
               width={1000} 
               height={250} 
-              className="h-20 md:h-36 lg:h-44 w-auto mx-auto dark:invert transition-all duration-500"
               priority
+              className="h-20 md:h-36 lg:h-44 w-auto mx-auto transition-all duration-500"
+              
             />
             <p className="font-serif italic text-[15px] md:text-[16px] text-zinc-600 dark:text-zinc-400 mt-3 tracking-[0.05em] leading-none">
               Breaking barriers, shaping narrative
