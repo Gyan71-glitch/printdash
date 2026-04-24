@@ -1,86 +1,105 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-
-  await page.goto("https://theindianberg.com/", {
-    waitUntil: "networkidle2",
-  });
-
-  await new Promise(resolve => setTimeout(resolve, 3000));
-
-  // Extract titles + links
-  const articles = await page.evaluate(() => {
-    const data: any[] = [];
-
-    document.querySelectorAll("a").forEach(el => {
-      const title = el.innerText?.trim();
-      const link = (el as HTMLAnchorElement).href;
-
-      if (
-        title &&
-        title.length > 30 &&
-        link &&
-        link.includes("theindianberg.com")
-      ) {
-        data.push({ title, link });
-      }
+  let browser;
+  
+  try {
+    // Vercel-compatible launch configuration
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
     });
 
-    // remove duplicates
-    const unique: any[] = [];
-    const seen = new Set();
 
-    data.forEach(item => {
-      if (!seen.has(item.link)) {
-        seen.add(item.link);
-        unique.push(item);
-      }
+    const page = await browser.newPage();
+
+    await page.goto("https://theindianberg.com/", {
+      waitUntil: "networkidle2",
     });
 
-    return unique.slice(0, 15);
-  });
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
-  // Extract images
-  for (let article of articles) {
-    const newPage = await browser.newPage();
+    // Extract titles + links
+    const articles = await page.evaluate(() => {
+      const data: any[] = [];
 
-    try {
-      await newPage.goto(article.link, {
-        waitUntil: "networkidle2",
-      });
+      document.querySelectorAll("a").forEach(el => {
+        const title = el.innerText?.trim();
+        const link = (el as HTMLAnchorElement).href;
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      const image = await newPage.evaluate(() => {
-        const selectors = [
-          "article img",
-          ".post img",
-          ".entry-content img",
-          "img"
-        ];
-
-        for (let sel of selectors) {
-          const img = document.querySelector(sel);
-          if (img && img.src && img.src.startsWith("http")) {
-            return img.src;
-          }
+        if (
+          title &&
+          title.length > 30 &&
+          link &&
+          link.includes("theindianberg.com")
+        ) {
+          data.push({ title, link });
         }
-
-        return null;
       });
 
-      article.image = image;
+      // remove duplicates
+      const unique: any[] = [];
+      const seen = new Set();
 
-    } catch (e) {
-      article.image = null;
+      data.forEach(item => {
+        if (!seen.has(item.link)) {
+          seen.add(item.link);
+          unique.push(item);
+        }
+      });
+
+      return unique.slice(0, 15);
+    });
+
+    // Extract images
+    for (let article of articles) {
+      const newPage = await browser.newPage();
+
+      try {
+        await newPage.goto(article.link, {
+          waitUntil: "networkidle2",
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        const image = await newPage.evaluate(() => {
+          const selectors = [
+            "article img",
+            ".post img",
+            ".entry-content img",
+            "img"
+          ];
+
+          for (let sel of selectors) {
+            const img = document.querySelector(sel) as HTMLImageElement | null;
+            if (img && img.src && img.src.startsWith("http")) {
+              return img.src;
+            }
+          }
+
+          return null;
+        });
+
+        article.image = image;
+
+      } catch (e) {
+        article.image = null;
+      }
+
+      await newPage.close();
     }
 
-    await newPage.close();
+    await browser.close();
+    return Response.json(articles);
+
+  } catch (error: any) {
+    console.error("Scraping error:", error);
+    if (browser) await browser.close();
+    return Response.json({ error: error.message }, { status: 500 });
   }
-
-  await browser.close();
-
-  return Response.json(articles);
 }
+
