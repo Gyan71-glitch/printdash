@@ -93,11 +93,11 @@ export function Navbar() {
                   {theme === 'dark'
                     ? <Sun className="w-[16px] h-[16px]" />
                     : <Moon className="w-[16px] h-[16px]" />
-                    }
+                  }
                 </button>
               )}
               <span className="hidden md:block text-zinc-300 dark:text-zinc-700 text-sm">|</span>
-              
+
               {session?.user ? (
                 <div className="relative">
                   <button
@@ -160,16 +160,16 @@ export function Navbar() {
 
         <div className="py-4 md:py-6 text-center border-b border-zinc-200 dark:border-zinc-800">
           <Link href="/" className="inline-block group text-center no-underline">
-            <Image 
-              src="/Layer 0.png" 
-              alt="The Indianberg" 
-              width={1000} 
-              height={250} 
+            <Image
+              src="/Layer 0.png"
+              alt="The Indianberg"
+              width={1000}
+              height={250}
               priority
-              className="h-20 md:h-36 lg:h-44 w-auto mx-auto transition-all duration-500"
-              
+              className="h-14 md:h-20 lg:h-28 w-auto mx-auto transition-all duration-500"
+
             />
-            <p className="font-serif italic text-[15px] md:text-[16px] text-zinc-600 dark:text-zinc-400 mt-3 tracking-[0.05em] leading-none">
+            <p className="font-serif italic text-[13px] md:text-[14px] text-zinc-600 dark:text-zinc-400 mt-2 tracking-[0.05em] leading-none">
               Breaking barriers, shaping narrative
             </p>
           </Link>
@@ -243,11 +243,11 @@ export function Navbar() {
                   <Menu className="w-5 h-5 hover:text-red-700 transition-colors" />
                 </button>
                 <Link href="/">
-                  <Image 
-                    src="/logo.png" 
-                    alt="The Indianberg" 
-                    width={180} 
-                    height={40} 
+                  <Image
+                    src="/logo.png"
+                    alt="The Indianberg"
+                    width={180}
+                    height={40}
                     className="h-6 md:h-8 w-auto dark:invert"
                   />
                 </Link>
@@ -302,11 +302,11 @@ export function Navbar() {
               {/* Drawer Header */}
               <div className="flex items-center justify-between px-7 py-5 border-b-2 border-black dark:border-white flex-shrink-0">
                 <Link href="/" onClick={() => setIsMenuOpen(false)}>
-                  <Image 
-                    src="/logo.png" 
-                    alt="The Indianberg" 
-                    width={150} 
-                    height={40} 
+                  <Image
+                    src="/logo.png"
+                    alt="The Indianberg"
+                    width={150}
+                    height={40}
                     className="h-7 w-auto dark:invert"
                   />
                 </Link>
@@ -354,14 +354,14 @@ export function Navbar() {
 
               {/* Drawer Footer */}
               <div className="flex-shrink-0 px-7 py-6 border-t border-zinc-200 dark:border-zinc-800 space-y-3">
-                <button 
+                <button
                   onClick={openSignInModal}
                   className="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-black uppercase tracking-widest text-[11px] hover:bg-red-700 dark:hover:bg-zinc-200 transition-colors"
                 >
                   Subscribe — Unlimited Access
                 </button>
                 {!session && (
-                  <button 
+                  <button
                     onClick={openSignInModal}
                     className="w-full text-center text-sm font-bold text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors py-2"
                   >
