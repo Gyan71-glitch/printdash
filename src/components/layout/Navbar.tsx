@@ -161,14 +161,15 @@ export function Navbar() {
         <div className="py-4 md:py-6 text-center border-b border-zinc-200 dark:border-zinc-800">
           <Link href="/" className="inline-block group text-center no-underline">
             <Image
-              src="/Layer 0.png"
+              src="/logo.png"
               alt="The Indianberg"
               width={1000}
               height={250}
               priority
+              unoptimized
               className="h-14 md:h-20 lg:h-28 w-auto mx-auto transition-all duration-500"
-
             />
+
             <p className="font-serif italic text-[13px] md:text-[14px] text-zinc-600 dark:text-zinc-400 mt-2 tracking-[0.05em] leading-none">
               Breaking barriers, shaping narrative
             </p>
@@ -248,8 +249,10 @@ export function Navbar() {
                     alt="The Indianberg"
                     width={180}
                     height={40}
+                    unoptimized
                     className="h-6 md:h-8 w-auto dark:invert"
                   />
+
                 </Link>
               </div>
 
@@ -307,8 +310,10 @@ export function Navbar() {
                     alt="The Indianberg"
                     width={150}
                     height={40}
+                    unoptimized
                     className="h-7 w-auto dark:invert"
                   />
+
                 </Link>
                 <motion.button
                   onClick={() => setIsMenuOpen(false)}

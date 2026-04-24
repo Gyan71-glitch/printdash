@@ -51,6 +51,7 @@ export default async function ArticlePage({ params }: Props) {
           fill 
           className="object-cover"
           priority
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10 flex flex-col justify-between p-4">
           <div className="flex justify-between items-start w-full">
@@ -90,7 +91,13 @@ export default async function ArticlePage({ params }: Props) {
         <div className="flex items-center justify-between border-y border-zinc-200 dark:border-zinc-800 py-4 mb-10 max-w-[800px] mx-auto">
           <div className="flex items-center gap-4">
             <div className="relative w-10 h-10 rounded-full overflow-hidden grayscale">
-               <Image src={post.authorImageUrl || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop"} fill alt="Author" className="object-cover" />
+                <Image 
+                  src={post.authorImageUrl || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop"} 
+                  fill 
+                  alt="Author" 
+                  className="object-cover"
+                  sizes="40px"
+                />
             </div>
             <div>
               <span className="block text-[13px] font-bold">
@@ -127,6 +134,7 @@ export default async function ArticlePage({ params }: Props) {
                     fill 
                     className="object-cover group-hover:scale-105 transition-transform duration-[3s]"
                     priority
+                    sizes="(max-width: 1024px) 100vw, 800px"
                   />
                 </div>
                 {post.imageCaption && (

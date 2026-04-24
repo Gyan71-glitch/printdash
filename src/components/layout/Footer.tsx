@@ -37,8 +37,12 @@ export function Footer() {
                 alt="The Indianberg" 
                 width={200} 
                 height={50} 
+                unoptimized
                 className="h-10 w-auto invert" 
               />
+
+
+
               <span className="text-xs font-sans tracking-[0.2em] text-zinc-400 uppercase mt-2">
                 Breaking barriers, shaping narrative
               </span>

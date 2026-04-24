@@ -147,7 +147,7 @@ const dummyData = [
   {
     title: "Cyber-Forensics: The future of criminal investigations in India",
     section: "style",
-    imageUrl: "https://images.unsplash.com/photo-1504384308090-c89eecaaad8e?q=80&w=800&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop"
   },
 
   // NEW CATEGORIES SEED DATA
@@ -184,7 +184,7 @@ const dummyData = [
     tag: "Global",
     section: "politics",
     excerpt: "From firewalls to sanctions, the global web is fracturing into regional blocks with massive economic implications.",
-    imageUrl: "https://images.unsplash.com/photo-1526772662000-3f88f10c053b?q=80&w=800&auto=format&fit=crop"
+    imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop"
   },
 
   // ADDITIONAL HOME PAGE CONTENT
@@ -206,7 +206,7 @@ const dummyData = [
     title: "The Rise of Digital Nomads in Goa: A new security challenge?",
     section: "style",
     tag: "Lifestyle",
-    imageUrl: "https://images.unsplash.com/photo-1512100356132-d3221e8ebe03?q=80&w=800&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
     excerpt: "As remote workers flock to coastal towns, concerns over unsecure networks and data theft are on the rise."
   },
   {

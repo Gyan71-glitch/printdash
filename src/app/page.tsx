@@ -83,6 +83,7 @@ export default async function Home() {
                       alt={post.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100px, 200px"
                     />
                   </div>
                 )}
@@ -103,6 +104,7 @@ export default async function Home() {
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                         priority
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
                       />
                     </div>
                   )}
@@ -258,6 +260,7 @@ export default async function Home() {
                       alt={post.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform"
+                      sizes="100px"
                     />
                   </div>
                 </article>
