@@ -11,6 +11,9 @@ import { CommentSection } from "@/components/article/CommentSection"
 import { headers } from "next/headers"
 import { AdBanner } from "@/components/ads/AdBanner"
 
+export const dynamic = "force-dynamic";
+
+
 type Props = {
   params: Promise<{ slug: string }>
 }

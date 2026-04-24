@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, LayoutDashboard, RefreshCcw } from 'lucide-react';
 import Link from 'next/link';
 
+export const dynamic = "force-dynamic";
+
+
 type Section = 'news_flash' | 'main_feed' | 'featured' | 'opinions' | 'ledger' | 'visual' | 'politics' | 'style';
 
 const SECTIONS: { id: Section; label: string }[] = [

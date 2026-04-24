@@ -4,6 +4,9 @@ import { getPostsBySection } from "@/lib/posts";
 import { ArrowRight, Play, Eye, Flame } from "lucide-react";
 import { AdBanner } from "@/components/ads/AdBanner";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function Home() {
   // Fetch all sections in parallel
   const [
