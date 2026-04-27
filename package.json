@@ -10,11 +10,8 @@
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",
-<<<<<<< HEAD
     "@sparticuz/chromium": "^147.0.2",
-=======
     "@swc/helpers": "^0.5.21",
->>>>>>> 491394c (initial push to printdash repo)
     "@tailwindcss/typography": "^0.5.19",
     "axios": "^1.15.0",
     "bcryptjs": "^3.0.3",
