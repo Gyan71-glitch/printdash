@@ -90,17 +90,15 @@ export default async function Home() {
                     {post.title}
                   </h4>
                 </Link>
-                {post.imageUrl && (
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-full lg:aspect-[3/2] overflow-hidden bg-zinc-100 dark:bg-zinc-900 flex-shrink-0">
-                    <Image
-                      src={post.imageUrl || STABLE_IMG}
-                      alt={post.title}
-                      fill
-                      sizes="(max-width: 768px) 80px, (max-width: 1024px) 100px, 300px"
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-                )}
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-full lg:aspect-[3/2] overflow-hidden bg-zinc-100 dark:bg-zinc-900 flex-shrink-0">
+                  <Image
+                    src={post.imageUrl || STABLE_IMG}
+                    alt={post.title}
+                    fill
+                    sizes="(max-width: 768px) 80px, (max-width: 1024px) 100px, 300px"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
               </article>
             ))}
           </div>
@@ -109,18 +107,16 @@ export default async function Home() {
             {hero && (
               <article className="group mb-12 lg:mb-16 border-b border-zinc-200 dark:border-zinc-800 pb-8 lg:pb-12">
                 <Link href={`/article/${hero._id}`}>
-                  {hero.imageUrl && (
-                    <div className="relative aspect-[16/10] mb-6 lg:mb-8 overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-sm">
-                      <Image
-                        src={hero.imageUrl || STABLE_IMG}
-                        alt={hero.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 800px"
-                        className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                        priority
-                      />
-                    </div>
-                  )}
+                  <div className="relative aspect-[16/10] mb-6 lg:mb-8 overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-sm">
+                    <Image
+                      src={hero.imageUrl || STABLE_IMG}
+                      alt={hero.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 800px"
+                      className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                      priority
+                    />
+                  </div>
                   <h2 className="font-serif text-[32px] sm:text-[44px] md:text-[62px] font-black leading-[1] md:leading-[0.9] tracking-tighter mb-4 lg:mb-6 group-hover:text-red-700 transition-colors decoration-red-700 hover:underline underline-offset-[10px]">
                     {hero.title}
                   </h2>
@@ -140,17 +136,15 @@ export default async function Home() {
               <article className="group pt-8 lg:pt-10 border-t-2 border-black dark:border-white flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-6 lg:gap-8">
                 <div className="flex-1">
                   <Link href={`/article/${secondaryHero._id}`}>
-                    {secondaryHero.imageUrl && (
-                      <div className="relative aspect-[4/3] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                        <Image
-                          src={secondaryHero.imageUrl || STABLE_IMG}
-                          alt={secondaryHero.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                    )}
+                    <div className="relative aspect-[4/3] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                      <Image
+                        src={secondaryHero.imageUrl || STABLE_IMG}
+                        alt={secondaryHero.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
                     <h3 className="font-serif font-black text-[22px] lg:text-[24px] leading-[1.1] mb-3 group-hover:text-red-700 transition-colors">
                       {secondaryHero.title}
                     </h3>
@@ -235,11 +229,9 @@ export default async function Home() {
             <div className="space-y-8 lg:space-y-10">
               {style.slice(0, 3).map((post: any, i: number) => (
                 <article key={i} className="group">
-                  {post.imageUrl && (
-                    <div className="relative aspect-[16/9] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                      <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                    </div>
-                  )}
+                  <div className="relative aspect-[16/9] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                    <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  </div>
                   <Link href={`/article/${post._id}`}>
                     <h4 className="font-serif font-black text-[18px] lg:text-[20px] leading-tight group-hover:text-red-700 transition-colors tracking-tight">
                       {post.title}
@@ -301,11 +293,9 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 lg:gap-y-12">
             {[...ledger, ...politics, ...style].slice(4, 12).map((post: any, i: number) => (
               <article key={i} className="group flex flex-col">
-                {post.imageUrl && (
-                  <div className="relative aspect-[3/2] mb-4 lg:mb-5 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                    <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                  </div>
-                )}
+                <div className="relative aspect-[3/2] mb-4 lg:mb-5 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                  <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
                 <Link href={`/article/${post._id}`}>
                   <h4 className="font-serif font-bold text-[17px] lg:text-[18px] leading-tight group-hover:text-red-700 transition-colors mb-2 lg:mb-3">
                     {post.title}
