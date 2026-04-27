@@ -10,7 +10,7 @@
   --font-sans: var(--font-inter);
   --font-serif: var(--font-playfair);
   
-  --animate-marquee: marquee 30s linear infinite;
+  --animate-marquee: marquee 60s linear infinite;
 
   @keyframes marquee {
     from { transform: translateX(0); }
@@ -55,8 +55,6 @@ body {
 
 /* Hide Next.js development indicator that overlaps content */
 nextjs-portal { display: none !important; }
-
-/* Removed conflicting manual dark mode colors, relying on Tailwind utilities instead */
 
 /* Editorial Utilities */
 .editorial-measure {
