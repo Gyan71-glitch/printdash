@@ -70,8 +70,6 @@ export default async function Home() {
         </div>
       )}
 
-      {/* 2. STOCK TICKER (CNBC BAR) */}
-      <StockTicker />
 
       <main className="max-w-[1600px] mx-auto px-4 md:px-8 pt-4 lg:pt-6">
         <AdBanner type="leaderboard" className="mb-8 lg:mb-12" />
