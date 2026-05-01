@@ -81,6 +81,18 @@ export function Navbar() {
               <button aria-label="Notifications" className="p-1.5 hover:text-red-600 transition-colors hidden md:block">
                 <Bell className="w-[16px] h-[16px]" />
               </button>
+              {mounted && (
+                <button
+                  aria-label="Toggle dark mode"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  className="p-1.5 hover:text-red-600 transition-colors md:hidden"
+                >
+                  {theme === 'dark'
+                    ? <Sun className="w-[16px] h-[16px]" />
+                    : <Moon className="w-[16px] h-[16px]" />
+                  }
+                </button>
+              )}
             </div>
 
             <div className="flex items-center gap-2 md:gap-4 pr-1 md:pr-0">
@@ -88,7 +100,7 @@ export function Navbar() {
                 <button
                   aria-label="Toggle dark mode"
                   onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  className="p-1.5 hover:text-red-600 transition-colors"
+                  className="p-1.5 hover:text-red-600 transition-colors hidden md:block"
                 >
                   {theme === 'dark'
                     ? <Sun className="w-[16px] h-[16px]" />
