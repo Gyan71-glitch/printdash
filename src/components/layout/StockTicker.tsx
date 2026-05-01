@@ -46,8 +46,7 @@ export function StockTicker() {
     <div className="w-full overflow-hidden bg-[#001D3D] text-white border-y border-[#003566] py-1 md:py-1.5 flex items-center text-[11px] md:text-[12px] font-sans font-bold select-none uppercase tracking-tighter relative z-10">
       <div className="max-w-[1600px] mx-auto w-full flex items-center px-4 md:px-8">
         <div className="bg-[#003566] px-3 md:px-4 py-1 z-20 flex items-center gap-1.5 md:gap-2 border-r border-[#001D3D] flex-shrink-0 min-w-[90px] md:min-w-[120px] justify-center mr-3 md:mr-4">
-          <span className="text-yellow-400">CNBC</span>
-          <span className="text-[9px] md:text-[10px] text-zinc-300">REAL-TIME</span>
+          <span className="text-yellow-400">MARKET</span>
         </div>
         <motion.div
           className="flex whitespace-nowrap min-w-max items-center"

@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Indianberg 🕵️‍♂️
 
-## Getting Started
+**Breaking barriers, shaping narrative.**
 
-First, run the development server:
+The Indianberg is a premium investigative journalism platform focused on modern cybercrime, forensic analysis, and the digital underground. Built with a high-performance modern stack, it delivers deep-dive reporting through a sophisticated editorial interface.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Tech Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Scraping**: Puppeteer, Cheerio
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Dynamic Editorial Grid**: A custom-built dashboard for multi-section news delivery.
+- **Live News Flash**: Real-time ticker for breaking stories.
+- **Business Ledger**: Specialized section for financial and corporate investigative reporting.
+- **Advanced Scraping**: Automated data ingestion from global digital sources.
+- **Premium Design**: Dark mode support, responsive typography, and high-contrast visuals.
+- **Live Stock Ticker**: Integrated financial market data visualization.
 
-## Learn More
+## 🛠 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Node.js 18+
+- MongoDB instance (local or Atlas)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up your `.env.local`:
+   ```env
+   MONGODB_URI=your_mongodb_uri
+   NEXTAUTH_SECRET=your_secret
+   NEXTAUTH_URL=http://localhost:3000
+   ```
+4. Seed the database (optional):
+   ```bash
+   node seed_direct.js
+   ```
+5. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📂 Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `/src/app`: Page routes and API handlers.
+- `/src/components`: UI components (Ads, Layout, Article Feed).
+- `/src/models`: Mongoose schemas for Posts and Users.
+- `/src/lib`: Database utilities and fetching logic.
+- `scraper.js`: Independent scraping script for data acquisition.
+
+---
+
+© 2026 The Indianberg. All rights reserved.

@@ -37,7 +37,7 @@ export function Navbar() {
     // Fetch dynamic categories/tags from CMS
     const fetchTags = async () => {
       try {
-        const res = await fetch('/api/seed?tags=true'); 
+        const res = await fetch('/api/seed?tags=true');
         const data = await res.json();
         if (data.success) {
           setDynamicCategories(data.tags);
@@ -155,10 +155,24 @@ export function Navbar() {
                 </>
               )}
             </div>
+
+            {/* Mobile-only Logo (Centered in Navbar) */}
+            <div className="md:hidden absolute left-1/2 -translate-x-1/2 flex items-center">
+              <Link href="/">
+                <Image
+                  src="/logo.png"
+                  alt="The Indianberg"
+                  width={140}
+                  height={35}
+                  unoptimized
+                  className="h-6 w-auto dark:invert"
+                />
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="py-4 md:py-6 text-center border-b border-zinc-200 dark:border-zinc-800">
+        <div className="hidden md:block py-4 md:py-6 text-center border-b border-zinc-200 dark:border-zinc-800">
           <Link href="/" className="inline-block group text-center no-underline">
             <Image
               src="/logo.png"
