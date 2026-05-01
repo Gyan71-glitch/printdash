@@ -95,7 +95,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   </div>
                   <div className="flex-1 flex flex-col">
                     <span className="text-[9px] md:text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3">
-                      {post.tag || categoryName} • {post.timeAgo || "Recent Coverage"}
+                      {(post.tag || categoryName).replace(/_/g, ' ')} • {post.timeAgo || "Recent Coverage"}
                     </span>
                     <h3 className="font-serif text-[20px] lg:text-[24px] font-black leading-tight mb-4 group-hover:text-red-700 transition-colors tracking-tight">
                       {post.title}

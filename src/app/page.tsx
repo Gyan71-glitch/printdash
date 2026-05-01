@@ -85,7 +85,7 @@ export default async function Home() {
             {sideStories.map((post: any, i: number) => (
               <article key={i} className="group pb-6 lg:pb-8 border-b border-zinc-50 dark:border-zinc-900 last:border-0 last:pb-0 flex flex-row lg:flex-col gap-4">
                 <Link href={`/article/${post._id}`} className="flex-1">
-                  <span className="text-[9px] lg:text-[10px] font-bold uppercase text-red-700 dark:text-red-500 tracking-widest mb-1 lg:mb-2 block">{post.tag || "Archive"}</span>
+                  <span className="text-[9px] lg:text-[10px] font-bold uppercase text-red-700 dark:text-red-500 tracking-widest mb-1 lg:mb-2 block">{(post.tag || "Archive").replace(/_/g, ' ')}</span>
                   <h4 className="font-serif font-bold text-[16px] lg:text-[18px] leading-[1.2] lg:leading-[1.15] tracking-tight group-hover:text-zinc-500 transition-colors mb-2">
                     {post.title}
                   </h4>
@@ -305,7 +305,7 @@ export default async function Home() {
                   {post.excerpt}
                 </p>
                 <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-900 text-[9px] lg:text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                  {post.tag || "World"} • {post.timeAgo || "Updated"}
+                  {(post.tag || "World").replace(/_/g, ' ')} • {post.timeAgo || "Updated"}
                 </div>
               </article>
             ))}

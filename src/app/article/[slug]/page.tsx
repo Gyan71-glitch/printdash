@@ -60,7 +60,7 @@ export default async function ArticlePage({ params }: Props) {
             </Link>
           </div>
           <div className="pb-4 text-white">
-            <span className="font-bold uppercase tracking-[0.2em] text-[10px] mb-2 block">{post.tag || post.section || "Article"}</span>
+            <span className="font-bold uppercase tracking-[0.2em] text-[10px] mb-2 block">{(post.tag || post.section || "Article").replace(/_/g, ' ')}</span>
             <h1 className="font-serif text-[32px] font-black leading-[1.1] drop-shadow-lg">
               {post.title}
             </h1>
@@ -75,7 +75,7 @@ export default async function ArticlePage({ params }: Props) {
           <div className="flex items-center justify-center gap-4 mb-4">
             <span className="h-px w-8 bg-red-600"></span>
             <span className="text-sm font-black uppercase tracking-[0.2em] text-red-700 dark:text-red-500 whitespace-nowrap">
-              {post.tag || post.section || "Article"}
+              {(post.tag || post.section || "Article").replace(/_/g, ' ')}
             </span>
             <span className="h-px w-8 bg-red-600"></span>
           </div>

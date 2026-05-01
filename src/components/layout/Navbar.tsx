@@ -83,7 +83,7 @@ export function Navbar() {
               </button>
             </div>
 
-            <div className="flex items-center gap-3 md:gap-4">
+            <div className="flex items-center gap-2 md:gap-4 pr-1 md:pr-0">
               {mounted && (
                 <button
                   aria-label="Toggle dark mode"
@@ -148,7 +148,7 @@ export function Navbar() {
                   </button>
                   <button
                     onClick={openSignInModal}
-                    className="bg-black dark:bg-white text-white dark:text-black font-black text-[11px] uppercase tracking-widest px-4 py-1.5 hover:bg-red-700 dark:hover:bg-zinc-200 transition-colors"
+                    className="bg-black dark:bg-white text-white dark:text-black font-black text-[9px] md:text-[10px] uppercase tracking-widest px-2.5 py-1 md:px-4 md:py-1.5 hover:bg-red-700 dark:hover:bg-zinc-200 transition-colors flex-shrink-0"
                   >
                     Subscribe
                   </button>
@@ -200,7 +200,7 @@ export function Navbar() {
                 href={`/category/${cat.toLowerCase().replace(/ /g, '_')}`}
                 className="text-[12px] font-bold text-zinc-900 dark:text-zinc-100 hover:text-red-700 dark:hover:text-red-500 transition-colors whitespace-nowrap flex-shrink-0"
               >
-                {cat}
+                {cat.replace(/_/g, ' ')}
               </Link>
             ))}
           </div>
@@ -273,7 +273,7 @@ export function Navbar() {
               {/* Center: Category pills on desktop */}
               <nav className="hidden xl:flex items-center gap-5">
                 {categories.slice(0, 5).map(cat => (
-                  <Link key={cat} href={`/category/${cat.toLowerCase().replace(/ /g, '_')}`} className="text-[12px] font-bold text-zinc-600 dark:text-zinc-400 hover:text-red-700 transition-colors">{cat}</Link>
+                  <Link key={cat} href={`/category/${cat.toLowerCase().replace(/ /g, '_')}`} className="text-[12px] font-bold text-zinc-600 dark:text-zinc-400 hover:text-red-700 transition-colors">{cat.replace(/_/g, ' ')}</Link>
                 ))}
                 <span className="text-zinc-300 dark:text-zinc-700">|</span>
               </nav>
@@ -285,7 +285,7 @@ export function Navbar() {
                     {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                   </button>
                 )}
-                <button className="bg-black dark:bg-white text-white dark:text-black text-[10px] font-black uppercase tracking-widest px-4 py-1.5 hover:bg-red-700 transition-colors">
+                <button className="bg-black dark:bg-white text-white dark:text-black text-[9px] font-black uppercase tracking-widest px-3 py-1 hover:bg-red-700 transition-colors flex-shrink-0">
                   Subscribe
                 </button>
               </div>
@@ -364,7 +364,7 @@ export function Navbar() {
                         href={`/category/${cat.toLowerCase().replace(/ /g, '_')}`} onClick={() => setIsMenuOpen(false)}
                         className="block py-3.5 border-b border-zinc-100 dark:border-zinc-900 font-sans text-[16px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-red-700 dark:hover:text-red-500 transition-colors"
                       >
-                        {cat}
+                        {cat.replace(/_/g, ' ')}
                       </Link>
                     </motion.div>
                   ))}
