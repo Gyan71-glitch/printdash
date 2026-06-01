@@ -40,36 +40,6 @@ export default async function Home() {
   return (
     <div className="w-full bg-white dark:bg-black font-sans pb-20 selection:bg-red-100 selection:text-red-900">
 
-      {/* 1. NEWS FLASH (RED TICKER) */}
-      {newsFlash.length > 0 && (
-        <div className="bg-[#B00000] text-white py-2 lg:py-2.5 overflow-hidden border-b border-red-900 group mb-2 lg:mb-4">
-          <div className="max-w-[1600px] mx-auto px-4 md:px-8 grid grid-cols-[auto_1fr] items-center gap-0">
-            {/* 1. Static Label Area */}
-            <div className="relative z-30 bg-[#B00000] pr-4 lg:pr-6 flex items-center">
-              <div className="flex items-center gap-2 px-2.5 py-1 bg-white text-[#B00000] rounded-sm shadow-md flex-shrink-0">
-                <span className="relative flex h-1.5 w-1.5 lg:h-2 lg:w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 lg:h-2 lg:w-2 bg-red-600"></span>
-                </span>
-                <span className="text-[9px] lg:text-[11px] font-black uppercase tracking-[0.2em]">Live</span>
-              </div>
-              <div className="absolute right-0 top-0 bottom-0 w-4 lg:w-6 bg-gradient-to-r from-[#B00000] to-transparent"></div>
-            </div>
-
-            {/* 2. Marquee Clipping Area */}
-            <div className="overflow-hidden relative flex items-center h-full">
-              <div className="flex gap-12 lg:gap-16 animate-marquee whitespace-nowrap group-hover:[animation-play-state:paused]">
-                {[...newsFlash, ...newsFlash].map((post: any, i: number) => (
-                  <Link key={i} href={`/article/${post._id}`} className="text-[12px] lg:text-[13px] font-bold hover:underline underline-offset-4 decoration-1">
-                    {post.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
 
       <main className="max-w-[1600px] mx-auto px-4 md:px-8 pt-4 lg:pt-6">
         <AdBanner type="leaderboard" className="mb-8 lg:mb-12" />
@@ -311,9 +281,9 @@ export default async function Home() {
             ))}
           </div>
           <div className="mt-12 lg:mt-16 flex justify-center">
-            <button className="border-2 border-black dark:border-white px-8 lg:px-10 py-3 text-[10px] lg:text-[11px] font-black uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">
+            <Link href="/search" className="border-2 border-black dark:border-white px-8 lg:px-10 py-3 text-[10px] lg:text-[11px] font-black uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all">
               Load More Stories
-            </button>
+            </Link>
           </div>
         </section>
 

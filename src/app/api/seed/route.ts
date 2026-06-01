@@ -240,9 +240,16 @@ export async function GET(request: Request) {
     await connectToDatabase();
 
     if (getTagsOnly) {
-      const tags = await Post.distinct('tag');
-      const sections = await Post.distinct('section');
-      const allUnique = Array.from(new Set([...tags, ...sections])).filter(Boolean);
+      const rawTags = await Post.distinct('tag') as string[];
+      const rawSections = await Post.distinct('section') as string[];
+      
+      const structuralSections = ['main feed', 'main_feed', 'news flash', 'featured', 'ledger', 'visual', 'post'];
+      
+      const allUnique = Array.from(new Set([...rawTags, ...rawSections]))
+        .filter(Boolean)
+        .filter(tag => !tag.startsWith('#'))
+        .filter(tag => !structuralSections.includes(tag.toLowerCase()));
+        
       return NextResponse.json({ success: true, tags: allUnique });
     }
     

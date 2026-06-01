@@ -5,6 +5,12 @@ import bcrypt from 'bcryptjs';
 import connectToDatabase from '@/lib/mongodb';
 import User from '@/models/User';
 
+const ADMIN_EMAILS = [
+  'devendra_khati1512@gmail.com',
+  'raiyn1279@gmail.com',
+  'indiansberg@gmail.com'
+];
+
 export const authOptions: NextAuthOptions = {
   providers: [
     // ─── Email / Password ───────────────────────────────────────────
@@ -42,11 +48,14 @@ export const authOptions: NextAuthOptions = {
           }
 
           console.log(`[AUTH] Successful login: ${email}`);
+          const isAdmin = ADMIN_EMAILS.includes(email);
+
           return {
             id: user._id.toString(),
             name: user.name,
             email: user.email,
             image: user.image,
+            role: isAdmin ? 'admin' : user.role,
           };
         } catch (error: any) {
           console.error(`[AUTH] Error in authorize: ${error.message}`);
@@ -88,10 +97,17 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
-      if (user) {
+      if (!token.role) {
         await connectToDatabase();
-        const dbUser = await User.findOne({ email: user.email });
-        if (dbUser) token.id = dbUser._id.toString();
+        const email = token.email || user?.email;
+        if (email) {
+          const dbUser = await User.findOne({ email });
+          const isAdmin = ADMIN_EMAILS.includes(email.toLowerCase());
+          if (dbUser) {
+            token.id = dbUser._id.toString();
+            token.role = isAdmin ? 'admin' : (dbUser.role || 'user');
+          }
+        }
       }
       return token;
     },
@@ -99,6 +115,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token.id) {
         (session.user as any).id = token.id;
+        (session.user as any).role = token.role;
       }
       return session;
     },

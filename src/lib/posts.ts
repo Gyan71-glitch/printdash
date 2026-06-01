@@ -43,12 +43,36 @@ export async function getAllPosts() {
 export async function getUniqueTags() {
   try {
     await connectToDatabase();
-    const tags = await Post.distinct('tag');
-    const sections = await Post.distinct('section');
-    return Array.from(new Set([...tags, ...sections])).filter(Boolean);
+    const rawTags = await Post.distinct('tag') as string[];
+    const rawSections = await Post.distinct('section') as string[];
+    
+    const structuralSections = ['main feed', 'main_feed', 'news flash', 'featured', 'ledger', 'visual', 'post'];
+    
+    return Array.from(new Set([...rawTags, ...rawSections]))
+      .filter(Boolean)
+      .filter(tag => !tag.startsWith('#'))
+      .filter(tag => !structuralSections.includes(tag.toLowerCase()));
   } catch (e) {
     console.error("Error fetching unique tags:", e);
     return [];
   }
 }
 
+export async function searchPosts(query: string) {
+  try {
+    await connectToDatabase();
+    const searchRegex = new RegExp(query, 'i');
+    const posts = await Post.find({
+      $or: [
+        { title: searchRegex },
+        { excerpt: searchRegex },
+        { tag: searchRegex },
+        { content: searchRegex }
+      ]
+    }).sort({ publishedAt: -1 }).lean();
+    return JSON.parse(JSON.stringify(posts));
+  } catch (e) {
+    console.error("Error searching posts:", e);
+    return [];
+  }
+}

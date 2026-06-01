@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Menu, Search, Moon, Sun, X, Bell, ChevronDown, LogOut } from 'lucide-react'
+import { Menu, Search, Moon, Sun, X, Bell, ChevronDown, LogOut, LayoutDashboard } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { StockTicker } from './StockTicker'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
@@ -11,9 +11,8 @@ import Image from 'next/image'
 import { useAuth } from '@/components/auth/AuthProvider'
 
 const STATIC_CATEGORIES = [
-  "Cyber Crime", "Forensics", "Investigations", "Dark Web",
-  "Policy", "Privacy", "Security", "Intelligence", "Finance",
-  "Legal", "Global"
+  "Latest", "Markets", "News", "Brands Story", 
+  "Politics", "Business", "IPO"
 ]
 
 const TRENDING = [
@@ -139,6 +138,16 @@ export function Navbar() {
                           <p className="text-xs font-bold text-zinc-900 dark:text-white truncate">{session.user.name}</p>
                           <p className="text-xs text-zinc-400 truncate">{session.user.email}</p>
                         </div>
+                        {((session.user as any)?.role === 'admin' || session?.user?.email === 'raiyn1279@gmail.com') && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors border-b border-zinc-100 dark:border-zinc-800"
+                          >
+                            <LayoutDashboard className="w-4 h-4" />
+                            Admin Panel
+                          </Link>
+                        )}
                         <button
                           onClick={() => { signOut(); setIsUserMenuOpen(false); }}
                           className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
@@ -238,7 +247,7 @@ export function Navbar() {
             {TRENDING.map((trend, i) => (
               <Link
                 key={i}
-                href="#"
+                href={`/search?q=${encodeURIComponent(trend)}`}
                 className="font-serif italic text-[14px] text-zinc-600 dark:text-zinc-400 hover:text-red-700 dark:hover:text-red-400 transition-colors whitespace-nowrap hover:underline"
               >
                 {trend}
@@ -284,7 +293,7 @@ export function Navbar() {
 
               {/* Center: Category pills on desktop */}
               <nav className="hidden xl:flex items-center gap-5">
-                {categories.slice(0, 5).map(cat => (
+                {categories.slice(0, 7).map(cat => (
                   <Link key={cat} href={`/category/${cat.toLowerCase().replace(/ /g, '_')}`} className="text-[12px] font-bold text-zinc-600 dark:text-zinc-400 hover:text-red-700 transition-colors">{cat.replace(/_/g, ' ')}</Link>
                 ))}
                 <span className="text-zinc-300 dark:text-zinc-700">|</span>

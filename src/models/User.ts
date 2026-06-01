@@ -6,6 +6,7 @@ export interface IUser extends Document {
   password?: string;
   image?: string;
   provider: string;
+  role: string;
   createdAt: Date;
 }
 
@@ -15,6 +16,7 @@ const UserSchema = new Schema<IUser>({
   password: { type: String }, // only for credentials provider
   image: { type: String },
   provider: { type: String, default: 'credentials' },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
   createdAt: { type: Date, default: Date.now },
 });
 

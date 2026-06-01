@@ -1,251 +1,165 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, LayoutDashboard, RefreshCcw } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { FilePlus, Trash2, Pencil, Eye, RefreshCw } from 'lucide-react';
 
-export const dynamic = "force-dynamic";
-
-
-type Section = 'news_flash' | 'main_feed' | 'featured' | 'opinions' | 'ledger' | 'visual' | 'politics' | 'style';
-
-const SECTIONS: { id: Section; label: string }[] = [
-  { id: 'news_flash', label: 'News Flash (Live)' },
-  { id: 'main_feed', label: 'Main News Feed' },
-  { id: 'featured', label: 'Featured Media' },
-  { id: 'opinions', label: 'Opinions' },
-  { id: 'ledger', label: 'More from The Ledger' },
-  { id: 'visual', label: 'Visual Investigations' },
-  { id: 'politics', label: 'Politics Focus' },
-  { id: 'style', label: 'The Style Section' },
-];
+interface Post {
+  _id: string;
+  title: string;
+  tag: string;
+  author: string;
+  publishedAt: string;
+  imageUrl?: string;
+}
 
 export default function AdminDashboard() {
-  const [activeSection, setActiveSection] = useState<Section>('main_feed');
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentPost, setCurrentPost] = useState<any>({});
+  const [deleting, setDeleting] = useState<string | null>(null);
 
-  const fetchPosts = async (section: string) => {
+  const fetchPosts = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/posts?section=${section}`);
-      const json = await res.json();
-      if (json.success) {
-        setPosts(json.data);
-      } else {
-        console.error(json.error);
-      }
-    } catch (err) {
-      console.error(err);
+      const res = await fetch('/api/admin/posts');
+      const data = await res.json();
+      setPosts(data);
+    } catch (e) {
+      console.error('Failed to load posts', e);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  useEffect(() => {
-    fetchPosts(activeSection);
-  }, [activeSection]);
+  useEffect(() => { fetchPosts(); }, []);
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    const method = currentPost._id ? 'PUT' : 'POST';
-    
-    // Auto-assign section
-    const postData = { ...currentPost, section: activeSection };
-
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+    setDeleting(id);
     try {
-      const res = await fetch('/api/posts', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postData),
-      });
-      const json = await res.json();
-      if (json.success) {
-        setIsEditing(false);
-        setCurrentPost({});
-        fetchPosts(activeSection);
-      } else {
-        alert("Error saving: " + json.error);
-      }
-    } catch (err) {
-      console.error(err);
+      await fetch(`/api/admin/posts/${id}`, { method: 'DELETE' });
+      setPosts(prev => prev.filter(p => p._id !== id));
+    } catch (e) {
+      alert('Failed to delete post.');
+    } finally {
+      setDeleting(null);
     }
-    setLoading(false);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this post?')) return;
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/posts?id=${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchPosts(activeSection);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    setLoading(false);
+  const TAG_COLORS: Record<string, string> = {
+    'Latest': 'bg-blue-900/50 text-blue-300',
+    'Markets': 'bg-green-900/50 text-green-300',
+    'News': 'bg-orange-900/50 text-orange-300',
+    'Brands Story': 'bg-purple-900/50 text-purple-300',
+    'Politics': 'bg-red-900/50 text-red-300',
+    'Business': 'bg-yellow-900/50 text-yellow-300',
+    'IPO': 'bg-teal-900/50 text-teal-300',
   };
 
   return (
-    <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white dark:bg-[#0A0A0A] border-r border-zinc-200 dark:border-zinc-800 flex flex-col">
-        <div className="p-6 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-2">
-          <LayoutDashboard className="w-5 h-5 text-red-600" />
-          <h1 className="font-serif font-black text-xl tracking-tight">The Ledger CMS</h1>
+    <div className="p-6 md:p-10 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-white">All Articles</h1>
+          <p className="text-zinc-500 text-sm mt-1">{posts.length} total articles in the database</p>
         </div>
-        <nav className="flex-1 overflow-y-auto py-4">
-          <ul className="space-y-1 px-3">
-            {SECTIONS.map((sec) => (
-              <li key={sec.id}>
-                <button
-                  onClick={() => { setActiveSection(sec.id); setIsEditing(false); }}
-                  className={`w-full text-left px-4 py-2.5 rounded-md text-sm font-medium transition-colors ${
-                    activeSection === sec.id
-                      ? 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900'
-                  }`}
-                >
-                  {sec.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="p-4 border-t border-zinc-200 dark:border-zinc-800">
-             <Link href="/" className="block text-center w-full px-4 py-2 bg-zinc-900 text-white dark:bg-white dark:text-black font-bold text-xs uppercase tracking-widest rounded-md hover:opacity-90">View Live Site</Link>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Header */}
-        <header className="bg-white dark:bg-[#0A0A0A] px-8 py-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-          <h2 className="text-2xl font-serif font-black">
-            {SECTIONS.find(s => s.id === activeSection)?.label}
-          </h2>
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => { setIsEditing(true); setCurrentPost({}); }}
-            className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold shadow hover:bg-red-700 transition"
+            onClick={fetchPosts}
+            className="p-2 rounded-md bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all"
+            title="Refresh"
           >
-            <Plus className="w-4 h-4" /> Create Post
+            <RefreshCw className="w-4 h-4" />
           </button>
-        </header>
+          <Link
+            href="/admin/posts/new"
+            className="flex items-center gap-2 bg-red-700 hover:bg-red-600 text-white px-4 py-2.5 rounded-md text-sm font-bold transition-all"
+          >
+            <FilePlus className="w-4 h-4" />
+            New Article
+          </Link>
+        </div>
+      </div>
 
-        {/* Workspace */}
-        <div className="flex-1 overflow-y-auto p-8">
-          {isEditing ? (
-            <div className="max-w-3xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#0A0A0A] p-6 rounded-lg shadow-sm">
-              <h3 className="text-lg font-bold mb-6 font-serif">{currentPost._id ? 'Edit Post' : 'New Post'}</h3>
-              <form onSubmit={handleSave} className="space-y-4">
-                
-                <div className="grid grid-cols-2 gap-4">
-                     <div className="col-span-2">
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Title</label>
-                        <input required type="text" value={currentPost.title || ''} onChange={e => setCurrentPost({...currentPost, title: e.target.value})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none" />
+      {/* Table */}
+      {loading ? (
+        <div className="flex items-center justify-center h-64">
+          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : (
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-zinc-800 text-zinc-500 text-xs uppercase tracking-widest">
+                <th className="text-left px-6 py-4 font-semibold">Title</th>
+                <th className="text-left px-6 py-4 font-semibold hidden md:table-cell">Category</th>
+                <th className="text-left px-6 py-4 font-semibold hidden lg:table-cell">Author</th>
+                <th className="text-left px-6 py-4 font-semibold hidden lg:table-cell">Published</th>
+                <th className="text-right px-6 py-4 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800">
+              {posts.map(post => (
+                <tr key={post._id} className="hover:bg-zinc-800/50 transition-colors group">
+                  <td className="px-6 py-4">
+                    <p className="font-semibold text-white line-clamp-1 max-w-xs lg:max-w-md">{post.title}</p>
+                  </td>
+                  <td className="px-6 py-4 hidden md:table-cell">
+                    <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider ${TAG_COLORS[post.tag] || 'bg-zinc-800 text-zinc-400'}`}>
+                      {post.tag}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 hidden lg:table-cell text-zinc-400">{post.author || '—'}</td>
+                  <td className="px-6 py-4 hidden lg:table-cell text-zinc-500 text-xs">
+                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        href={`/article/${post._id}`}
+                        target="_blank"
+                        className="p-1.5 rounded-md text-zinc-500 hover:text-white hover:bg-zinc-700 transition-all"
+                        title="View Live"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Link>
+                      <Link
+                        href={`/admin/posts/${post._id}/edit`}
+                        className="p-1.5 rounded-md text-zinc-500 hover:text-white hover:bg-zinc-700 transition-all"
+                        title="Edit"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(post._id, post.title)}
+                        disabled={deleting === post._id}
+                        className="p-1.5 rounded-md text-zinc-500 hover:text-red-400 hover:bg-red-900/30 transition-all disabled:opacity-40"
+                        title="Delete"
+                      >
+                        {deleting === post._id
+                          ? <div className="w-4 h-4 border border-current border-t-transparent rounded-full animate-spin" />
+                          : <Trash2 className="w-4 h-4" />
+                        }
+                      </button>
                     </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-                    <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Sub Type / Variation</label>
-                        <input type="text" placeholder="top, sub, main, side..." value={currentPost.subType || ''} onChange={e => setCurrentPost({...currentPost, subType: e.target.value})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none" />
-                    </div>
-                    
-                    <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Link URL</label>
-                        <input type="text" value={currentPost.url || ''} onChange={e => setCurrentPost({...currentPost, url: e.target.value})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none" />
-                    </div>
-
-                    <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Author</label>
-                        <input type="text" value={currentPost.author || ''} onChange={e => setCurrentPost({...currentPost, author: e.target.value})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none" />
-                    </div>
-
-                    <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Tag / Category</label>
-                        <input type="text" value={currentPost.tag || ''} onChange={e => setCurrentPost({...currentPost, tag: e.target.value})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none" />
-                    </div>
-                    
-                    <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Time Ago</label>
-                        <input type="text" placeholder="2 hours ago..." value={currentPost.timeAgo || ''} onChange={e => setCurrentPost({...currentPost, timeAgo: e.target.value})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none" />
-                    </div>
-
-                    <div>
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Order</label>
-                        <input type="number" value={currentPost.order || 0} onChange={e => setCurrentPost({...currentPost, order: parseInt(e.target.value)})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none" />
-                    </div>
-                    
-                    <div className="col-span-2">
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Image URL</label>
-                        <input type="text" value={currentPost.imageUrl || ''} onChange={e => setCurrentPost({...currentPost, imageUrl: e.target.value})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none" />
-                    </div>
-                    
-                    <div className="col-span-2">
-                        <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Description / Excerpt</label>
-                        <textarea rows={3} value={currentPost.excerpt || currentPost.description || ''} onChange={e => setCurrentPost({...currentPost, excerpt: e.target.value, description: e.target.value})} className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 bg-transparent rounded focus:ring-1 focus:ring-red-600 outline-none"></textarea>
-                    </div>
-                    
-                    <div className="col-span-2 flex items-center gap-2">
-                        <input type="checkbox" id="isLive" checked={currentPost.isLive || false} onChange={e => setCurrentPost({...currentPost, isLive: e.target.checked})} className="w-4 h-4" />
-                        <label htmlFor="isLive" className="text-sm font-bold">Mark as "Live" (For News Flash)</label>
-                    </div>
-                </div>
-
-                <div className="flex gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
-                  <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 text-sm font-semibold rounded-md border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition flex-1">Cancel</button>
-                  <button type="submit" disabled={loading} className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black text-sm font-bold uppercase tracking-widest rounded-md hover:bg-zinc-800 dark:hover:bg-zinc-200 transition flex-1">
-                    {loading ? 'Saving...' : 'Save Post'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <div className="bg-white dark:bg-[#0A0A0A] border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm overflow-hidden">
-               <div className="overflow-x-auto">
-                 <table className="w-full text-sm text-left">
-                   <thead className="text-xs uppercase bg-zinc-50 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800">
-                     <tr>
-                       <th className="px-6 py-4">Title</th>
-                       <th className="px-6 py-4">Type/Order</th>
-                       <th className="px-6 py-4">Date</th>
-                       <th className="px-6 py-4 text-right">Actions</th>
-                     </tr>
-                   </thead>
-                   <tbody>
-                     {loading && posts.length === 0 && (
-                         <tr><td colSpan={4} className="px-6 py-8 text-center text-zinc-500"><RefreshCcw className="w-5 h-5 mx-auto animate-spin" /></td></tr>
-                     )}
-                     {!loading && posts.length === 0 && (
-                         <tr><td colSpan={4} className="px-6 py-8 text-center text-zinc-500">No posts found in this section.</td></tr>
-                     )}
-                     {posts.map(post => (
-                       <tr key={post._id} className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                         <td className="px-6 py-4 font-medium text-zinc-900 dark:text-white max-w-xs truncate" title={post.title}>
-                             {post.isLive && <span className="inline-block w-2 h-2 bg-red-600 rounded-full mr-2"></span>}
-                             {post.title}
-                         </td>
-                         <td className="px-6 py-4 text-zinc-500">{post.subType || 'Default'} <span className="text-xs opacity-50 bg-zinc-200 dark:bg-zinc-800 px-1 rounded ml-1">Ord:{post.order}</span></td>
-                         <td className="px-6 py-4 text-zinc-500">{new Date(post.createdAt).toLocaleDateString()}</td>
-                         <td className="px-6 py-4 text-right space-x-2">
-                           <button onClick={() => { setCurrentPost(post); setIsEditing(true); }} className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 p-1">
-                              <Edit2 className="w-4 h-4" />
-                           </button>
-                           <button onClick={() => handleDelete(post._id)} className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 p-1">
-                              <Trash2 className="w-4 h-4" />
-                           </button>
-                         </td>
-                       </tr>
-                     ))}
-                   </tbody>
-                 </table>
-               </div>
+          {posts.length === 0 && !loading && (
+            <div className="text-center py-20 text-zinc-500">
+              <p className="text-lg font-semibold mb-2">No articles yet</p>
+              <p className="text-sm mb-6">Get started by creating your first article.</p>
+              <Link href="/admin/posts/new" className="bg-red-700 text-white px-6 py-3 rounded-md text-sm font-bold hover:bg-red-600 transition-all">
+                Create First Article
+              </Link>
             </div>
           )}
         </div>
-      </main>
+      )}
     </div>
   );
 }

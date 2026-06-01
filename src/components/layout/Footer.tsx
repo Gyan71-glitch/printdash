@@ -67,7 +67,7 @@ export function Footer() {
               <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link}>
-                    <Link href="#" className="text-zinc-400 hover:text-white transition-colors text-sm">
+                    <Link href={`/search?q=${encodeURIComponent(link)}`} className="text-zinc-400 hover:text-white transition-colors text-sm">
                       {link}
                     </Link>
                   </li>
@@ -102,7 +102,7 @@ export function Footer() {
           </p>
           <div className="flex gap-6">
             {footerLinks.legal.map((link) => (
-              <Link key={link} href="#" className="text-zinc-500 hover:text-zinc-300 text-xs">
+              <Link key={link} href={`/search?q=${encodeURIComponent(link)}`} className="text-zinc-500 hover:text-zinc-300 text-xs">
                 {link}
               </Link>
             ))}
