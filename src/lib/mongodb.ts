@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/premium-news';
+const MONGODB_URI = process.env.MONGODB_URI || (process.env.NODE_ENV === 'production' ? '' : 'mongodb://127.0.0.1:27017/premium-news');
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable');
+  throw new Error('CRITICAL: MONGODB_URI environment variable is missing in Vercel! Please add it in Vercel Settings -> Environment Variables and redeploy.');
 }
+
 
 let cached = (global as any).mongoose;
 
