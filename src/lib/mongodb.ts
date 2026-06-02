@@ -6,6 +6,10 @@ if (!MONGODB_URI) {
   throw new Error('CRITICAL: MONGODB_URI environment variable is missing in Vercel! Please add it in Vercel Settings -> Environment Variables and redeploy.');
 }
 
+if (process.env.NODE_ENV === 'production' && (MONGODB_URI.includes('127.0.0.1') || MONGODB_URI.includes('localhost'))) {
+  throw new Error('CRITICAL: You pasted your LOCAL MongoDB URI into Vercel! You must use the MongoDB Atlas connection string (mongodb+srv://...) in Vercel.');
+}
+
 
 let cached = (global as any).mongoose;
 
