@@ -1,15 +1,7 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || (process.env.NODE_ENV === 'production' ? '' : 'mongodb://127.0.0.1:27017/premium-news');
-
-if (!MONGODB_URI) {
-  throw new Error('CRITICAL: MONGODB_URI environment variable is missing in Vercel! Please add it in Vercel Settings -> Environment Variables and redeploy.');
-}
-
-if (process.env.NODE_ENV === 'production' && (MONGODB_URI.includes('127.0.0.1') || MONGODB_URI.includes('localhost'))) {
-  throw new Error('CRITICAL: You pasted your LOCAL MongoDB URI into Vercel! You must use the MongoDB Atlas connection string (mongodb+srv://...) in Vercel.');
-}
-
+// Hardcoded for immediate fix as requested
+const MONGODB_URI = 'mongodb+srv://gyansoftwaredev_db_user:DxnY4ePsuoyaEJcz@cluster0.0nws6xp.mongodb.net/premium-news?appName=Cluster0';
 
 let cached = (global as any).mongoose;
 
