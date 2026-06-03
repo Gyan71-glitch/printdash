@@ -238,21 +238,24 @@ export function Navbar() {
         `}</style>
 
         {/* Trending Bar */}
-        <div className="hidden md:flex items-center gap-4 px-4 md:px-8 py-3 max-w-[1600px] mx-auto">
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-red-700 dark:text-red-500 whitespace-nowrap flex-shrink-0">
-            Trending
-          </span>
-          <div className="h-3 w-px bg-zinc-300 dark:bg-zinc-700 flex-shrink-0" />
-          <div className="flex items-center gap-5 overflow-hidden">
-            {TRENDING.map((trend, i) => (
-              <Link
-                key={i}
-                href={`/search?q=${encodeURIComponent(trend)}`}
-                className="font-serif italic text-[14px] text-zinc-600 dark:text-zinc-400 hover:text-red-700 dark:hover:text-red-400 transition-colors whitespace-nowrap hover:underline"
-              >
-                {trend}
-              </Link>
-            ))}
+        <div className="w-full border-t border-zinc-100 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-950">
+          <div className="flex items-center gap-4 px-4 md:px-8 py-2.5 max-w-[1600px] mx-auto overflow-x-auto no-scrollbar">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-red-700 dark:text-red-500 whitespace-nowrap flex-shrink-0 flex items-center gap-1.5">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />
+              Trending
+            </span>
+            <div className="h-3 w-px bg-zinc-300 dark:bg-zinc-700 flex-shrink-0" />
+            <div className="flex items-center gap-5 overflow-x-auto no-scrollbar">
+              {TRENDING.map((trend, i) => (
+                <Link
+                  key={i}
+                  href={`/search?q=${encodeURIComponent(trend)}`}
+                  className="font-serif italic text-[13px] text-zinc-600 dark:text-zinc-400 hover:text-red-700 dark:hover:text-red-400 transition-colors whitespace-nowrap hover:underline flex-shrink-0"
+                >
+                  {trend}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 
