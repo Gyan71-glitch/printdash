@@ -8,7 +8,9 @@ import User from '@/models/User';
 const ADMIN_EMAILS = [
   'devendra_khati1512@gmail.com',
   'raiyn1279@gmail.com',
-  'indiansberg@gmail.com'
+  'indiansberg@gmail.com',
+  'theindianberg@gmail.com',
+  'devendra.khati1512@gmail.com'
 ];
 
 export const authOptions: NextAuthOptions = {

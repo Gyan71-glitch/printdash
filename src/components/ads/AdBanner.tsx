@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 
 interface AdBannerProps {
@@ -148,6 +149,28 @@ export function AdBanner({ type, className }: AdBannerProps) {
   }
 
   const currentAd = ads[type as "sidebar" | "in-feed"]
+
+  if (type === "in-feed") {
+    return (
+      <div className={cn("flex flex-col items-center justify-center my-8 w-full", className)}>
+        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400 mb-2">Advertisement</span>
+        <div className="w-full max-w-[900px] mx-auto h-[120px] sm:h-[180px] md:h-[250px] relative overflow-hidden border border-zinc-200 dark:border-zinc-700 shadow-sm bg-zinc-100 dark:bg-zinc-900 cursor-pointer">
+          {/* LPU Banner image placeholder - Requires user to add lpu-banner.jpg to public folder */}
+          <Image 
+            src="/lpu-banner.png" 
+            alt="LPU Scholarship Advertisement" 
+            fill 
+            className="object-cover object-center"
+            sizes="(max-width: 900px) 100vw, 900px"
+            priority
+          />
+          <div className="absolute bottom-1 right-1 px-1 bg-black/40 text-[7px] text-white/80 rounded pointer-events-none z-20">
+            AdChoices
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={cn("flex flex-col items-center justify-center my-8", className)}>

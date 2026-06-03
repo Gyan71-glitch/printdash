@@ -32,7 +32,8 @@ export default async function Home() {
   const hero = mainFeed[0];
   const centerStories = mainFeed.slice(1, 4);
   const sideStories = mainFeed.slice(4, 11);
-  const ledgerStories = ledger.slice(0, 4);
+  // Ensure we always have 8 posts to fill the grid by padding with older mainFeed posts
+  const ledgerStories = [...ledger, ...mainFeed.slice(11)].slice(0, 8);
 
   // High-reliability fallback images (IDs that are guaranteed to be up)
   const STABLE_IMG = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80";
@@ -167,7 +168,7 @@ export default async function Home() {
 
           {/* Ledger Section (Left) */}
           <div className="lg:col-span-8">
-            <h3 className="text-[10px] lg:text-[11px] font-black uppercase tracking-widest mb-6 lg:mb-8 border-b border-black dark:border-white pb-1 inline-block">The Business Ledger</h3>
+            <h3 className="text-[10px] lg:text-[11px] font-black uppercase tracking-widest mb-6 lg:mb-8 border-b border-black dark:border-white pb-1 inline-block">Brands Story</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {ledgerStories.map((post: any, i: number) => (
                 <article key={i} className="flex gap-4 lg:gap-5 group border-b border-zinc-100 dark:border-zinc-900 pb-5 lg:pb-6 last:border-0 last:pb-0">
@@ -261,7 +262,7 @@ export default async function Home() {
             <h3 className="text-[12px] lg:text-[14px] font-black uppercase tracking-[0.2em]">More Top Stories</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 lg:gap-y-12">
-            {[...ledger, ...politics, ...style].slice(4, 12).map((post: any, i: number) => (
+            {[...mainFeed.slice(11), ...ledger.slice(4), ...politics.slice(6), ...style.slice(3)].map((post: any, i: number) => (
               <article key={i} className="group flex flex-col">
                 <div className="relative aspect-[3/2] mb-4 lg:mb-5 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                   <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover group-hover:scale-105 transition-transform duration-500" />

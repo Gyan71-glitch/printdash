@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
 
-// Hardcoded for immediate fix as requested
-const MONGODB_URI = 'mongodb+srv://gyansoftwaredev_db_user:DxnY4ePsuoyaEJcz@cluster0.0nws6xp.mongodb.net/premium-news?appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI as string;
+
+if (!MONGODB_URI) {
+  throw new Error('Please define the MONGODB_URI environment variable in .env.local');
+}
 
 let cached = (global as any).mongoose;
 
