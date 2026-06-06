@@ -77,7 +77,7 @@ export default async function Home() {
           <div className="lg:col-span-6 order-1 lg:order-2 px-0 lg:px-2">
             {hero && (
               <article className="group mb-12 lg:mb-16 border-b border-zinc-200 dark:border-zinc-800 pb-8 lg:pb-12">
-                <Link href={`/article/${hero._id}`}>
+                <Link href={`/article/${hero._id}`} className="no-underline" style={{textDecoration: 'none'}}>
                   <div className="relative aspect-[16/10] mb-6 lg:mb-8 overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-sm">
                     <Image
                       src={hero.imageUrl || STABLE_IMG}
@@ -88,7 +88,7 @@ export default async function Home() {
                       priority
                     />
                   </div>
-                  <h2 className="font-serif text-[32px] sm:text-[44px] md:text-[62px] font-black leading-[1] md:leading-[0.9] tracking-tighter mb-4 lg:mb-6 group-hover:text-red-700 transition-colors decoration-red-700 hover:underline underline-offset-[10px]">
+                  <h2 className="font-serif text-[22px] sm:text-[24px] lg:text-[28px] font-black leading-[1.1] tracking-tight mb-4 lg:mb-6 text-zinc-950 dark:text-white group-hover:text-red-700 transition-colors" style={{fontStyle: 'normal', textDecoration: 'none', fontFamily: 'var(--font-playfair)'}}>
                     {hero.title}
                   </h2>
                   <p className="font-serif italic text-lg md:text-xl lg:text-[24px] text-zinc-700 dark:text-zinc-300 mb-6 lg:mb-8 leading-snug md:leading-[1.2] max-w-[95%]">

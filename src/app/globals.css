@@ -78,6 +78,12 @@ nextjs-portal { display: none !important; }
 /* WaPo-style headline hover underlines */
 .hover-underline-link:hover { text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
 
+/* Suppress underline on hero/card title links */
+a.no-underline,
+a.no-underline:hover,
+a.no-underline:focus,
+a.no-underline * { text-decoration: none !important; }
+
 /* Line-clamp utilities */
 .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
