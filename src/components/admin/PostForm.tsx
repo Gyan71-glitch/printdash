@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Save, ArrowLeft } from 'lucide-react';
@@ -28,6 +28,19 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
     imageUrl: initialData?.imageUrl || '',
     slug: initialData?.slug || '',
   });
+  const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch('/api/seed?tags=true')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setDynamicCategories(data.tags);
+      })
+      .catch(console.error);
+  }, []);
+
+  const STATIC_CATEGORIES = ["Latest", "Markets", "News", "Brands Story", "Politics", "Business", "IPO"];
+  const allCategories = Array.from(new Set([...STATIC_CATEGORIES, ...dynamicCategories]));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -36,6 +49,45 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
 
   const handleContentChange = (content: string) => {
     setFormData(prev => ({ ...prev, content }));
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85); // Compress to 85% JPEG
+        setFormData(prev => ({ ...prev, imageUrl: dataUrl }));
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -121,12 +173,18 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
 
             <div className="pt-2">
               <label className="block text-sm font-semibold text-zinc-400 mb-2">Article Content</label>
-              <div className="bg-white text-black rounded-lg overflow-hidden">
+              <div className="bg-white text-black rounded-lg overflow-hidden flex flex-col h-[500px]">
+                <style dangerouslySetInnerHTML={{__html: `
+                  .quill { display: flex; flex-direction: column; height: 100%; }
+                  .ql-toolbar { flex-shrink: 0; }
+                  .ql-container { flex-grow: 1; overflow-y: auto; height: auto !important; }
+                  .ql-editor { min-height: 100%; }
+                `}} />
                 <ReactQuill 
                   theme="snow" 
                   value={formData.content} 
                   onChange={handleContentChange} 
-                  className="h-96"
+                  className="flex-1"
                 />
               </div>
             </div>
@@ -140,20 +198,20 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
             
             <div>
               <label className="block text-sm font-semibold text-zinc-400 mb-2">Category</label>
-              <select
+              <input
+                type="text"
                 name="tag"
                 value={formData.tag}
                 onChange={handleChange}
+                list="category-options"
+                placeholder="Select or type a new category..."
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-red-500"
-              >
-                <option value="Latest">Latest</option>
-                <option value="Markets">Markets</option>
-                <option value="News">News</option>
-                <option value="Brands Story">Brands Story</option>
-                <option value="Politics">Politics</option>
-                <option value="Business">Business</option>
-                <option value="IPO">IPO</option>
-              </select>
+              />
+              <datalist id="category-options">
+                {allCategories.map(cat => (
+                  <option key={cat} value={cat} />
+                ))}
+              </datalist>
             </div>
 
             <div>
@@ -200,8 +258,53 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
 
           <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 space-y-4">
             <h3 className="text-white font-bold mb-4 border-b border-zinc-800 pb-2">Media</h3>
+            
             <div>
-              <label className="block text-sm font-semibold text-zinc-400 mb-2">Featured Image URL</label>
+              <label className="block text-sm font-semibold text-zinc-400 mb-2">Upload Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="w-full text-sm text-zinc-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-red-900/30 file:text-red-500 hover:file:bg-red-900/50 transition-all cursor-pointer border border-zinc-800 rounded-lg bg-zinc-950"
+              />
+            </div>
+
+            <div className="relative flex py-2 items-center">
+              <div className="flex-grow border-t border-zinc-800"></div>
+              <span className="flex-shrink-0 mx-4 text-zinc-500 text-xs uppercase font-bold">OR PASTE LINK</span>
+              <div className="flex-grow border-t border-zinc-800"></div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-semibold text-zinc-400">Featured Image URL</label>
+                <button 
+                  type="button"
+                  onClick={async () => {
+                    if (!formData.imageUrl) return;
+                    // If it already looks like a direct image link, don't scrape
+                    if (formData.imageUrl.match(/\.(jpeg|jpg|gif|png|webp)$/i)) return;
+                    
+                    try {
+                      const res = await fetch('/api/scrape-image', {
+                        method: 'POST',
+                        body: JSON.stringify({ url: formData.imageUrl })
+                      });
+                      const data = await res.json();
+                      if (data.imageUrl) {
+                        setFormData(prev => ({ ...prev, imageUrl: data.imageUrl }));
+                      } else {
+                        alert("Could not extract an image from this link. Try pasting the direct Image Address (right-click the image -> Copy Image Address).");
+                      }
+                    } catch (e) {
+                      alert("Error extracting image. Please paste a direct image URL.");
+                    }
+                  }}
+                  className="text-xs bg-zinc-800 hover:bg-zinc-700 text-white px-3 py-1 rounded transition-colors font-bold"
+                >
+                  Extract Image from Link
+                </button>
+              </div>
               <input
                 type="url"
                 name="imageUrl"

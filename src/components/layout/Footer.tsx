@@ -18,7 +18,14 @@ const footerLinks = {
     },
     {
       title: "Company",
-      links: ["About Us", "Careers", "Contact", "Advertise", "Press"]
+      links: [
+        "About Us", 
+        "Careers", 
+        "Contact", 
+        "Advertise", 
+        "Press", 
+        { name: "Brands Policy", href: "/brands-policy" }
+      ]
     }
   ],
   legal: ["Terms of Service", "Privacy Policy", "Cookie Policy", "Accessibility"]
@@ -65,13 +72,18 @@ export function Footer() {
             <div key={section.title}>
               <h3 className="font-sans font-bold text-lg mb-4 text-zinc-100">{section.title}</h3>
               <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link}>
-                    <Link href={`/search?q=${encodeURIComponent(link)}`} className="text-zinc-400 hover:text-white transition-colors text-sm">
-                      {link}
-                    </Link>
-                  </li>
-                ))}
+                {section.links.map((link) => {
+                  const isString = typeof link === 'string';
+                  const href = isString ? `/search?q=${encodeURIComponent(link)}` : (link as any).href;
+                  const name = isString ? link : (link as any).name;
+                  return (
+                    <li key={name}>
+                      <Link href={href} className="text-zinc-400 hover:text-white transition-colors text-sm">
+                        {name}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { getPostsByTag } from '@/lib/posts'
 import { notFound } from 'next/navigation'
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // Cache and regenerate every 60 seconds
 
 
 interface CategoryPageProps {

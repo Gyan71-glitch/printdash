@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,8 +22,50 @@ const playfair = Playfair_Display({
 
 
 export const metadata: Metadata = {
-  title: "The Indian Berg | Breaking barriers, shaping narrative",
+  metadataBase: new URL("https://www.theindianberg.com"),
+  title: {
+    default: "The Indian Berg | Breaking barriers, shaping narrative",
+    template: "%s | The Indian Berg",
+  },
   description: "Advanced investigative reporting on modern cyber crime, forensic analysis, and the global digital underground.",
+  keywords: ["The Indian Berg", "news", "investigative journalism", "breaking news", "India news", "world news"],
+  authors: [{ name: "The Indian Berg Team" }],
+  openGraph: {
+    title: "The Indian Berg | Breaking barriers, shaping narrative",
+    description: "Advanced investigative reporting on modern cyber crime, forensic analysis, and the global digital underground.",
+    url: "https://www.theindianberg.com",
+    siteName: "The Indian Berg",
+    images: [
+      {
+        url: "/logo.png",
+        width: 800,
+        height: 600,
+        alt: "The Indian Berg Logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Indian Berg | Breaking barriers, shaping narrative",
+    description: "Advanced investigative reporting on modern cyber crime, forensic analysis, and the global digital underground.",
+    images: ["/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: "7deVizf4rqAroBS-kvThd17ozyDmceWGj8OVeodfRpc",
+  },
 };
 
 export default function RootLayout({
@@ -37,6 +80,18 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-white dark:bg-black text-black dark:text-zinc-100">
+        <NextTopLoader
+          color="#dc2626"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #dc2626,0 0 5px #dc2626"
+          zIndex={1600}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

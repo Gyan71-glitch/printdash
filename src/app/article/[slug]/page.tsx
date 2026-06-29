@@ -10,12 +10,58 @@ import { ShareButtons } from "@/components/article/ShareButtons"
 import { CommentSection } from "@/components/article/CommentSection"
 import { headers } from "next/headers"
 import { AdBanner } from "@/components/ads/AdBanner"
+import type { Metadata } from "next"
 
-export const dynamic = "force-dynamic";
-
+export const revalidate = 60; // Cache and regenerate every 60 seconds
 
 type Props = {
   params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  await connectToDatabase();
+  let post;
+  try {
+    post = await Post.findById(slug).lean();
+  } catch (e) {
+    post = null;
+  }
+  
+  if (!post) {
+    return {
+      title: "Article Not Found | The Indian Berg"
+    }
+  }
+
+  const defaultImage = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1200&auto=format&fit=crop";
+  const ogImage = post.imageUrl || defaultImage;
+
+  return {
+    title: post.title,
+    description: post.excerpt || post.title,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt || post.title,
+      type: "article",
+      publishedTime: post.createdAt ? new Date(post.createdAt).toISOString() : undefined,
+      authors: post.author ? [post.author] : undefined,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt || post.title,
+      images: [ogImage],
+    },
+  }
 }
 
 export default async function ArticlePage({ params }: Props) {
@@ -146,19 +192,16 @@ export default async function ArticlePage({ params }: Props) {
 
               {/* Body Text */}
               <div className="editorial-measure text-zinc-900 dark:text-zinc-200">
-                <div className="drop-cap prose prose-zinc dark:prose-invert max-w-none 
+                <div className="drop-cap prose prose-zinc dark:prose-invert max-w-none break-words
                              prose-p:font-serif prose-p:text-[20px] md:prose-p:text-[22px] prose-p:leading-[1.75] prose-p:mb-6
                              prose-a:text-red-700 dark:prose-a:text-red-500 prose-a:font-bold prose-a:underline-offset-4
-                             prose-strong:font-black prose-strong:text-zinc-950 dark:prose-strong:text-white">
-                  <p>{post.excerpt || post.description || "The global stock market rally hit a major roadblock on Thursday. The latest inflation figures from the Labor Department arrived hotter than economists anticipated, triggering a massive sell-off across equities, bonds, and even some commodities."}</p>
-                  <p>For months, the defining narrative on Wall Street has been one of optimism—specifically, the belief that central banks were fully prepared to ease monetary policy. But the new Consumer Price Index (CPI) data suggests that the "last mile" of defeating inflation may be the hardest yet. As demonstrated by recent polling, <Link href="#">Democratic voters</Link> appear to be watching these developments closely.</p>
-                  
-                  {/* In-feed Ad */}
-                  <AdBanner type="in-feed" className="my-10" />
-
-                  <p>By midday trading, the S&P 500 was down more than 1.8%, while the tech-heavy Nasdaq Composite dropped 2.2%. Yields on the 10-year Treasury note, which move inversely to prices, spiked to their highest levels since November.</p>
-                  <p>"What we are seeing today is a fundamental repricing of risk," said Michael Thorne, a senior portfolio manager at Horizon Asset Management. "The market had priced in three rate cuts this year. We might be lucky to get one."</p>
-                  <p>The data revealed that core services, particularly housing and auto insurance, remained stubbornly expensive. While goods inflation has cooled dramatically, the service sector continues to run hot, fueled by a resilient labor market.</p>
+                             prose-strong:font-black prose-strong:text-zinc-950 dark:prose-strong:text-white
+                             [&_*]:!max-w-full [&_*]:!break-words">
+                  {post.content ? (
+                    <div dangerouslySetInnerHTML={{ __html: post.content.replace(/&nbsp;/g, ' ') }} />
+                  ) : (
+                    <p className="whitespace-pre-line">{post.description || post.excerpt}</p>
+                  )}
                 </div>
               </div>
 

@@ -5,7 +5,7 @@ import { ArrowRight, Play, Eye, Flame } from "lucide-react";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { StockTicker } from "@/components/layout/StockTicker";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // Cache and regenerate every 60 seconds
 
 export default async function Home() {
   // Fetch all sections in parallel
@@ -31,7 +31,7 @@ export default async function Home() {
 
   const hero = mainFeed[0];
   const centerStories = mainFeed.slice(1, 4);
-  const sideStories = mainFeed.slice(4, 11);
+  const sideStories = newsFlash.slice(0, 8); // Use newsFlash to fill Latest Coverage
   // Ensure we always have 8 posts to fill the grid by padding with older mainFeed posts
   const ledgerStories = [...ledger, ...mainFeed.slice(11)].slice(0, 8);
 
@@ -198,7 +198,7 @@ export default async function Home() {
           <div className="lg:col-span-4 lg:pl-8 lg:border-l lg:border-zinc-100 dark:lg:border-zinc-900">
             <h3 className="text-[10px] lg:text-[11px] font-black uppercase tracking-widest mb-6 lg:mb-8 border-b border-black dark:border-white pb-1 inline-block">The Style Section</h3>
             <div className="space-y-8 lg:space-y-10">
-              {style.slice(0, 3).map((post: any, i: number) => (
+              {style.slice(0, 4).map((post: any, i: number) => (
                 <article key={i} className="group">
                   <div className="relative aspect-[16/9] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                     <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -262,7 +262,7 @@ export default async function Home() {
             <h3 className="text-[12px] lg:text-[14px] font-black uppercase tracking-[0.2em]">More Top Stories</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10 lg:gap-y-12">
-            {[...mainFeed.slice(11), ...ledger.slice(4), ...politics.slice(6), ...style.slice(3)].map((post: any, i: number) => (
+            {[...mainFeed.slice(11), ...ledger.slice(4), ...politics.slice(6), ...style.slice(4), ...newsFlash.slice(8)].slice(0, 16).map((post: any, i: number) => (
               <article key={i} className="group flex flex-col">
                 <div className="relative aspect-[3/2] mb-4 lg:mb-5 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                   <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover group-hover:scale-105 transition-transform duration-500" />

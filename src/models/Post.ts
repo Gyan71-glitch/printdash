@@ -5,6 +5,7 @@ export interface IPost extends Document {
   section: 'news_flash' | 'main_feed' | 'featured' | 'opinions' | 'ledger' | 'visual' | 'politics' | 'style';
   subType?: 'top' | 'sub' | 'main' | 'secondary' | 'side';
   excerpt?: string;
+  content?: string;
   author?: string;
   authorImageUrl?: string;
   timeAgo?: string;
@@ -28,6 +29,7 @@ const PostSchema = new Schema<IPost>(
     },
     subType: { type: String },
     excerpt: { type: String },
+    content: { type: String },
     author: { type: String },
     authorImageUrl: { type: String },
     timeAgo: { type: String },
