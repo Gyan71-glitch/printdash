@@ -92,15 +92,23 @@ export default function AdminDashboard() {
 
     // Sort
     result.sort((a, b) => {
-      let valA: any = a[sortField] || '';
-      let valB: any = b[sortField] || '';
+      let valA: any;
+      let valB: any;
 
       if (sortField === 'publishedAt') {
-        valA = new Date(valA).getTime() || 0;
-        valB = new Date(valB).getTime() || 0;
+        // Use publishedAt if valid, otherwise fall back to _id timestamp
+        const dateA = a.publishedAt ? new Date(a.publishedAt).getTime() : NaN;
+        const dateB = b.publishedAt ? new Date(b.publishedAt).getTime() : NaN;
+
+        // Extract timestamp from MongoDB ObjectID (first 4 bytes = unix seconds)
+        const idTimeA = parseInt(a._id.substring(0, 8), 16) * 1000;
+        const idTimeB = parseInt(b._id.substring(0, 8), 16) * 1000;
+
+        valA = isNaN(dateA) ? idTimeA : dateA;
+        valB = isNaN(dateB) ? idTimeB : dateB;
       } else {
-        valA = valA.toString().toLowerCase();
-        valB = valB.toString().toLowerCase();
+        valA = (a[sortField as keyof Post] || '').toString().toLowerCase();
+        valB = (b[sortField as keyof Post] || '').toString().toLowerCase();
       }
 
       if (valA < valB) return sortDir === 'asc' ? -1 : 1;
