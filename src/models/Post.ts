@@ -12,6 +12,7 @@ export interface IPost extends Document {
   tag?: string;
   imageUrl?: string;
   url?: string;
+  slug?: string;
   isLive?: boolean;
   description?: string;
   order?: number;
@@ -36,6 +37,7 @@ const PostSchema = new Schema<IPost>(
     tag: { type: String },
     imageUrl: { type: String },
     url: { type: String, default: '#' },
+    slug: { type: String, unique: true, sparse: true },
     isLive: { type: Boolean, default: false },
     description: { type: String },
     order: { type: Number, default: 0 },

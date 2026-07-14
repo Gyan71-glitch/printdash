@@ -38,7 +38,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             posts.map((post: any, index: number) => (
               <Link 
                 key={post._id} 
-                href={`/article/${post._id}`}
+                href={`/article/${post.slug || post._id}`}
                 className="group flex flex-col h-full border-t border-zinc-200 dark:border-zinc-800 pt-4"
               >
                 <div className="mb-3">

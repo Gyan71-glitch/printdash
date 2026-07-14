@@ -287,7 +287,7 @@ export default function AdminDashboard() {
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <Link
-                        href={`/article/${post._id}`}
+                        href={`/article/${post.slug || post._id}`}
                         target="_blank"
                         className="p-1.5 rounded-md text-zinc-500 hover:text-white hover:bg-zinc-700 transition-all"
                         title="View Live"

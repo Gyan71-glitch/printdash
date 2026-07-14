@@ -55,7 +55,7 @@ export default async function Home() {
             </div>
             {sideStories.map((post: any, i: number) => (
               <article key={i} className="group pb-6 lg:pb-8 border-b border-zinc-50 dark:border-zinc-900 last:border-0 last:pb-0 flex flex-row lg:flex-col gap-4">
-                <Link href={`/article/${post._id}`} className="flex-1">
+                <Link href={`/article/${post.slug || post._id}`} className="flex-1">
                   <span className="text-[9px] lg:text-[10px] font-bold uppercase text-red-700 dark:text-red-500 tracking-widest mb-1 lg:mb-2 block">{(post.tag || "Archive").replace(/_/g, ' ')}</span>
                   <h4 className="font-serif font-bold text-[16px] lg:text-[18px] leading-[1.2] lg:leading-[1.15] tracking-tight group-hover:text-zinc-500 transition-colors mb-2">
                     {post.title}
@@ -77,7 +77,7 @@ export default async function Home() {
           <div className="lg:col-span-6 order-1 lg:order-2 px-0 lg:px-2">
             {hero && (
               <article className="group mb-12 lg:mb-16 border-b border-zinc-200 dark:border-zinc-800 pb-8 lg:pb-12">
-                <Link href={`/article/${hero._id}`} className="no-underline" style={{textDecoration: 'none'}}>
+                <Link href={`/article/${hero.slug || hero._id}`} className="no-underline" style={{textDecoration: 'none'}}>
                   <div className="relative aspect-[16/10] mb-6 lg:mb-8 overflow-hidden bg-zinc-100 dark:bg-zinc-900 shadow-sm">
                     <Image
                       src={hero.imageUrl || STABLE_IMG}
@@ -106,7 +106,7 @@ export default async function Home() {
             {centerStories.map((story: any, i: number) => (
               <article key={i} className="group pt-8 lg:pt-10 border-t-2 border-black dark:border-white flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-6 lg:gap-8 mb-8 lg:mb-10 last:mb-0">
                 <div className="flex-1">
-                  <Link href={`/article/${story._id}`}>
+                  <Link href={`/article/${story.slug || story._id}`}>
                     <div className="relative aspect-[4/3] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                       <Image
                         src={story.imageUrl || STABLE_IMG}
@@ -136,7 +136,7 @@ export default async function Home() {
             {opinions.slice(0, 15).map((post: any, i: number) => (
               <article key={i} className="group border-b border-zinc-100 dark:border-zinc-900 pb-5 lg:pb-6 last:border-0 flex items-start gap-4 lg:gap-5">
                 <div className="flex-1">
-                  <Link href={`/article/${post._id}`}>
+                  <Link href={`/article/${post.slug || post._id}`}>
                     <div className="mb-2 text-[10px] lg:text-[11px] font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-widest border-l-2 border-red-600 pl-2">
                       {post.author || "Editorial Board"}
                     </div>
@@ -182,7 +182,7 @@ export default async function Home() {
                     />
                   </div>
                   <div className="flex-1">
-                    <Link href={`/article/${post._id}`}>
+                    <Link href={`/article/${post.slug || post._id}`}>
                       <h4 className="font-serif font-bold text-[16px] lg:text-[17px] leading-snug group-hover:text-red-700 transition-colors mb-2">
                         {post.title}
                       </h4>
@@ -203,7 +203,7 @@ export default async function Home() {
                   <div className="relative aspect-[16/9] mb-4 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                     <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
-                  <Link href={`/article/${post._id}`}>
+                  <Link href={`/article/${post.slug || post._id}`}>
                     <h4 className="font-serif font-black text-[18px] lg:text-[20px] leading-tight group-hover:text-red-700 transition-colors tracking-tight">
                       {post.title}
                     </h4>
@@ -223,7 +223,7 @@ export default async function Home() {
               {politics.slice(0, 6).map((post: any, i: number) => (
                 <article key={i} className="group border-b border-zinc-100 dark:border-zinc-900 pb-5 last:border-0 flex gap-4">
                   <div className="flex-1">
-                    <Link href={`/article/${post._id}`}>
+                    <Link href={`/article/${post.slug || post._id}`}>
                       <h4 className="font-serif font-black text-[16px] lg:text-[17px] leading-tight group-hover:text-red-700 transition-colors tracking-tight">
                         {post.title}
                       </h4>
@@ -267,7 +267,7 @@ export default async function Home() {
                 <div className="relative aspect-[3/2] mb-4 lg:mb-5 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                   <Image src={post.imageUrl || STABLE_IMG} alt={post.title} fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <Link href={`/article/${post._id}`}>
+                <Link href={`/article/${post.slug || post._id}`}>
                   <h4 className="font-serif font-bold text-[17px] lg:text-[18px] leading-tight group-hover:text-red-700 transition-colors mb-2 lg:mb-3">
                     {post.title}
                   </h4>

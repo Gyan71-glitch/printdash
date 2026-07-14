@@ -52,7 +52,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           <>
             {/* Top Featured Post in Category */}
             {featuredPost && (
-              <Link href={`/article/${featuredPost._id}`} className="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-12 lg:mb-20 border-b border-zinc-200 dark:border-zinc-800 pb-12 lg:pb-20">
+              <Link href={`/article/${featuredPost.slug || featuredPost._id}`} className="group grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-12 lg:mb-20 border-b border-zinc-200 dark:border-zinc-800 pb-12 lg:pb-20">
                 <div className="lg:col-span-7 xl:col-span-8 relative aspect-[16/10] sm:aspect-[21/9] lg:aspect-auto lg:h-[500px] bg-zinc-100 dark:bg-zinc-900 overflow-hidden shadow-sm">
                    <Image 
                      src={featuredPost.imageUrl || `https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1500&auto=format&fit=crop`} 
@@ -83,7 +83,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             {/* Category Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 lg:gap-x-12 gap-y-12 lg:gap-y-16">
               {otherPosts.map((post: any) => (
-                <Link href={`/article/${post._id}`} key={post._id} className="group flex flex-col h-full border-t border-zinc-100 dark:border-zinc-900 pt-8">
+                <Link href={`/article/${post.slug || post._id}`} key={post._id} className="group flex flex-col h-full border-t border-zinc-100 dark:border-zinc-900 pt-8">
                   <div className="relative aspect-[3/2] mb-6 overflow-hidden bg-zinc-100 dark:bg-zinc-900 grayscale group-hover:grayscale-0 transition-all duration-500 shadow-sm">
                      <Image 
                        src={post.imageUrl || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop"} 

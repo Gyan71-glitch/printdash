@@ -23,7 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   await connectToDatabase();
   let post;
   try {
-    post = await Post.findById(slug).lean();
+    const { Types } = require('mongoose');
+    const query = Types.ObjectId.isValid(slug) ? { _id: slug } : { slug: slug };
+    post = await Post.findOne(query).lean();
   } catch (e) {
     post = null;
   }
@@ -71,7 +73,9 @@ export default async function ArticlePage({ params }: Props) {
   let post;
   
   try {
-    post = await Post.findById(slug).lean();
+    const { Types } = require('mongoose');
+    const query = Types.ObjectId.isValid(slug) ? { _id: slug } : { slug: slug };
+    post = await Post.findOne(query).lean();
   } catch(e) {
     return notFound();
   }
