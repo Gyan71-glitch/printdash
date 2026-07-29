@@ -29,6 +29,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await connectToDatabase();
     const { id } = await params;
     const body = await request.json();
+    if (body.slug) {
+      body.slug = body.slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    } else if (body.title && !body.slug) {
+      body.slug = body.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    }
     const updated = await Post.findByIdAndUpdate(id, { ...body }, { new: true, runValidators: true });
     if (!updated) return NextResponse.json({ error: 'Not Found' }, { status: 404 });
     return NextResponse.json(updated);

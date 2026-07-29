@@ -37,9 +37,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Title and Tag are required' }, { status: 400 });
     }
 
-    // Auto-generate slug if not provided
-    if (!body.slug) {
-      body.slug = body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    // Clean / auto-generate slug
+    if (body.slug) {
+      body.slug = body.slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    } else if (body.title) {
+      body.slug = body.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     }
 
     const newPost = await Post.create({
