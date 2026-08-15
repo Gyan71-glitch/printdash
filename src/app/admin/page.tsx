@@ -11,6 +11,7 @@ interface Post {
   author: string;
   publishedAt: string;
   imageUrl?: string;
+  slug?: string;
 }
 
 type SortField = 'publishedAt' | 'title' | 'tag' | 'author';

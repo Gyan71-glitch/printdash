@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Post from '@/models/Post';
+import { generateUniqueSlug, slugify } from '@/lib/slug';
 
 export const dynamic = 'force-dynamic';
 
@@ -221,14 +222,9 @@ const dummyData = [
     section: "visual",
     tag: "Visual",
     imageUrl: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=1200&auto=format&fit=crop",
-    description: "Using satellite imagery and forensic logs, we reconstruct the moment the lights went out in Mumbai."
-  },
-  {
-    title: "The Deep Sea Cables: Protecting the physical internet",
-    section: "visual",
-    tag: "Infrastructure",
-    imageUrl: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1200&auto=format&fit=crop",
-    description: "A look at the vulnerable underwater networks that carry 99% of global data traffic."
+    description: "Using satellite imagery and forensic logs, we reconstruct the moment the lights went out in Mumbai.",
+    author: "Lifestyle Team",
+    timeAgo: "10 hours ago"
   }
 ];
 
@@ -236,8 +232,32 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const getTagsOnly = searchParams.get('tags') === 'true';
+    const action = searchParams.get('action');
 
     await connectToDatabase();
+
+    if (action === 'backfill') {
+      const postsWithoutSlug = await Post.find({
+        $or: [
+          { slug: { $exists: false } },
+          { slug: null },
+          { slug: "" }
+        ]
+      });
+      
+      let updatedCount = 0;
+      for (const post of postsWithoutSlug) {
+        if (post.title) {
+          const newSlug = await generateUniqueSlug(post.title, post._id.toString());
+          await Post.findByIdAndUpdate(post._id, { slug: newSlug });
+          updatedCount++;
+        }
+      }
+      return NextResponse.json({
+        success: true,
+        message: `Successfully backfilled slugs for ${updatedCount} posts.`
+      });
+    }
 
     if (getTagsOnly) {
       const rawTags = await Post.distinct('tag') as string[];
@@ -272,10 +292,12 @@ export async function GET(request: Request) {
     ];
     
     const seededData = dummyData.map((post, index) => {
-      if (!post.imageUrl) {
-        return { ...post, imageUrl: validImages[index % validImages.length] };
-      }
-      return post;
+      const slug = slugify(post.title);
+      return {
+        ...post,
+        slug,
+        imageUrl: post.imageUrl || validImages[index % validImages.length]
+      };
     });
 
     // Insert new dummy data

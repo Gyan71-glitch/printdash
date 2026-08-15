@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Share, MessageSquare, Home, Type, Printer, BookmarkPlus, ArrowLeft, Headphones } from "lucide-react"
 import connectToDatabase from "@/lib/mongodb"
 import Post from "@/models/Post"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { ReadingProgress } from "@/components/article/ReadingProgress"
 import { LikeButton } from "@/components/article/LikeButton"
 import { ShareButtons } from "@/components/article/ShareButtons"
@@ -11,6 +11,7 @@ import { CommentSection } from "@/components/article/CommentSection"
 import { headers } from "next/headers"
 import { AdBanner } from "@/components/ads/AdBanner"
 import type { Metadata } from "next"
+import { generateUniqueSlug } from "@/lib/slug"
 
 export const revalidate = 60; // Cache and regenerate every 60 seconds
 
@@ -70,7 +71,7 @@ export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
   
   await connectToDatabase();
-  let post;
+  let post: any;
   
   try {
     const { Types } = require('mongoose');
@@ -84,10 +85,22 @@ export default async function ArticlePage({ params }: Props) {
     return notFound();
   }
 
+  // If the post has no slug in DB, generate and save it on the fly
+  if (!post.slug && post.title) {
+    const newSlug = await generateUniqueSlug(post.title, post._id.toString());
+    await Post.findByIdAndUpdate(post._id, { slug: newSlug });
+    post.slug = newSlug;
+  }
+
+  // Canonical redirect if accessed by Mongo _id or non-canonical slug
+  if (post.slug && slug !== post.slug) {
+    redirect(`/article/${post.slug}`);
+  }
+
   const defaultImage = "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1200&auto=format&fit=crop";
   const host = (await headers()).get("host") || "localhost:3000";
   const protocol = host.includes("localhost") ? "http" : "https";
-  const currentUrl = `${protocol}://${host}/article/${slug}`;
+  const currentUrl = `${protocol}://${host}/article/${post.slug || slug}`;
 
   return (
     <div className="w-full bg-white dark:bg-black font-sans min-h-screen">
