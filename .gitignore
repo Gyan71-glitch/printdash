@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 public/uploads
 old_backup_tmp
+
+# local data backups written by scripts/
+/backups

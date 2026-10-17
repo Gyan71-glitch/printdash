@@ -1,12 +1,28 @@
 // One-off cleanup for the switch to fixed categories (src/lib/categories.ts).
 // 1. Normalises case/whitespace variants of free-text tags ("politics" -> "Politics").
 // 2. Gives the posts saved with the old default tag "Latest" a real category.
-// Dry run by default; pass --apply to write.
-//   npx tsx --env-file=.env.local scripts/retag-categories.ts [--apply]
+//
+// Run AFTER the fixed-categories code is deployed (old code would keep saving
+// "Latest" as a tag). From the repo root, with MONGODB_URI in .env.local:
+//
+//   npx tsx --env-file=.env.local scripts/retag-categories.ts            # dry run: prints the plan
+//   npx tsx --env-file=.env.local scripts/retag-categories.ts --apply    # backs up, then writes
+//   npx tsx --env-file=.env.local scripts/retag-categories.ts --restore backups/<file>.json   # undo
+//
+// --apply first saves every changed post's old tag to backups/ (gitignored).
+// "Latest" posts not listed below (e.g. published before the deploy) are reported
+// as UNRESOLVED and left alone; give them a category in the admin panel.
+import fs from 'fs';
+import path from 'path';
 import mongoose from 'mongoose';
 import { CATEGORIES, isCategory } from '../src/lib/categories';
 
 const APPLY = process.argv.includes('--apply');
+const restoreIdx = process.argv.indexOf('--restore');
+const RESTORE_FILE = restoreIdx > -1 ? process.argv[restoreIdx + 1] : undefined;
+const BACKUP_DIR = path.join(__dirname, '..', 'backups');
+
+type Change = { _id: string; title: string; from: string; to: string };
 
 // Suggested categories for the "Latest" posts, by post _id. Review before applying.
 const LATEST_RETAG: Record<string, string> = {
@@ -53,13 +69,29 @@ const LATEST_RETAG: Record<string, string> = {
   "69ef7f6a0301796448883d7f": "Politics", // Government introduces new data protection bill in parliament
 };
 
+// Puts back the tags recorded by an --apply run, only where the tag is still what that run set
+async function restore(posts: mongoose.mongo.Collection, file: string) {
+  const changes: Change[] = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const res = await posts.bulkWrite(
+    changes.map((c) => ({
+      updateOne: { filter: { _id: new mongoose.Types.ObjectId(c._id), tag: c.to }, update: { $set: { tag: c.from } } },
+    }))
+  );
+  console.log(`Restored ${res.modifiedCount} of ${changes.length} posts from ${file}`);
+}
+
 async function main() {
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error('MONGODB_URI is not set');
   await mongoose.connect(uri);
   const posts = mongoose.connection.db!.collection('posts');
 
-  const changes: { _id: mongoose.Types.ObjectId; title: string; from: string; to: string }[] = [];
+  if (RESTORE_FILE) {
+    await restore(posts, RESTORE_FILE);
+    return mongoose.disconnect();
+  }
+
+  const changes: Change[] = [];
   const unresolved: string[] = [];
 
   for (const p of await posts.find({}, { projection: { title: 1, tag: 1 } }).toArray()) {
@@ -70,7 +102,7 @@ async function main() {
       : CATEGORIES.find((c) => c.toLowerCase() === from.trim().toLowerCase());
 
     if (!to || !isCategory(to)) unresolved.push(`${id}  tag=${JSON.stringify(from)}  ${p.title}`);
-    else if (to !== from) changes.push({ _id: p._id, title: p.title, from, to });
+    else if (to !== from) changes.push({ _id: id, title: p.title, from, to });
   }
 
   for (const c of changes) console.log(`${JSON.stringify(c.from).padEnd(16)} -> ${c.to.padEnd(14)} ${c.title.trim().slice(0, 70)}`);
@@ -78,10 +110,18 @@ async function main() {
   unresolved.forEach((u) => console.log('  UNRESOLVED', u));
 
   if (APPLY && changes.length) {
+    fs.mkdirSync(BACKUP_DIR, { recursive: true });
+    const backup = path.join(BACKUP_DIR, `retag-categories-${new Date().toISOString().replace(/[:.]/g, '-')}.json`);
+    fs.writeFileSync(backup, JSON.stringify(changes, null, 1));
+    console.log(`Backup of old tags: ${path.relative(process.cwd(), backup)}`);
+
     const res = await posts.bulkWrite(
-      changes.map((c) => ({ updateOne: { filter: { _id: c._id, tag: c.from }, update: { $set: { tag: c.to } } } }))
+      changes.map((c) => ({
+        updateOne: { filter: { _id: new mongoose.Types.ObjectId(c._id), tag: c.from }, update: { $set: { tag: c.to } } },
+      }))
     );
-    console.log(`Applied: ${res.modifiedCount} updated`);
+    console.log(`Applied: ${res.modifiedCount} of ${changes.length} updated`);
+    console.log(`To undo: npx tsx --env-file=.env.local scripts/retag-categories.ts --restore ${path.relative(process.cwd(), backup)}`);
   } else if (!APPLY) {
     console.log('Dry run. Re-run with --apply to write.');
   }
