@@ -9,11 +9,8 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { useSession, signOut } from 'next-auth/react'
 import Image from 'next/image'
 import { useAuth } from '@/components/auth/AuthProvider'
+import { NAV_CATEGORIES } from '@/lib/categories'
 
-const STATIC_CATEGORIES = [
-  "Latest", "Markets", "News", "Brands Story", 
-  "Politics", "Business", "IPO"
-]
 
 export function Navbar() {
   const { theme, setTheme } = useTheme()
@@ -21,29 +18,15 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [dynamicCategories, setDynamicCategories] = useState<string[]>([])
   const { data: session } = useSession()
   const { openSignInModal } = useAuth()
   const { scrollY } = useScroll()
 
   useEffect(() => {
     setMounted(true)
-    // Fetch dynamic categories/tags from CMS
-    const fetchTags = async () => {
-      try {
-        const res = await fetch('/api/seed?tags=true');
-        const data = await res.json();
-        if (data.success) {
-          setDynamicCategories(data.tags);
-        }
-      } catch (e) {
-        console.error("Failed to fetch tags", e);
-      }
-    };
-    fetchTags();
   }, [])
 
-  const categories = Array.from(new Set([...STATIC_CATEGORIES, ...dynamicCategories]));
+  const categories = NAV_CATEGORIES;
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 130)

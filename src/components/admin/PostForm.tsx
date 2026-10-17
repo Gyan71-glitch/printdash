@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Save, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { CATEGORIES, isCategory } from '@/lib/categories';
 
 // Dynamically import react-quill-new to avoid SSR issues
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
@@ -22,25 +23,12 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
     title: initialData?.title || '',
     excerpt: initialData?.excerpt || '',
     content: initialData?.content || '',
-    tag: initialData?.tag || 'Latest',
+    tag: isCategory(initialData?.tag) ? initialData.tag : '',
     section: initialData?.section || 'main_feed',
     author: initialData?.author || '',
     imageUrl: initialData?.imageUrl || '',
     slug: initialData?.slug || '',
   });
-  const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetch('/api/seed?tags=true')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) setDynamicCategories(data.tags);
-      })
-      .catch(console.error);
-  }, []);
-
-  const STATIC_CATEGORIES = ["Latest", "Markets", "News", "Brands Story", "Politics", "Business", "IPO"];
-  const allCategories = Array.from(new Set([...STATIC_CATEGORIES, ...dynamicCategories]));
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -198,20 +186,18 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
             
             <div>
               <label className="block text-sm font-semibold text-zinc-400 mb-2">Category</label>
-              <input
-                type="text"
+              <select
                 name="tag"
                 value={formData.tag}
                 onChange={handleChange}
-                list="category-options"
-                placeholder="Select or type a new category..."
+                required
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-red-500"
-              />
-              <datalist id="category-options">
-                {allCategories.map(cat => (
-                  <option key={cat} value={cat} />
+              >
+                <option value="" disabled>Choose a category…</option>
+                {CATEGORIES.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
                 ))}
-              </datalist>
+              </select>
             </div>
 
             <div>

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectToDatabase from '@/lib/mongodb';
 import Post from '@/models/Post';
+import { isCategory } from '@/lib/categories';
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -29,6 +30,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     await connectToDatabase();
     const { id } = await params;
     const body = await request.json();
+    if ('tag' in body && !isCategory(body.tag)) {
+      return NextResponse.json({ error: `Unknown category: ${body.tag}` }, { status: 400 });
+    }
     if (body.slug) {
       body.slug = body.slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     } else if (body.title && !body.slug) {

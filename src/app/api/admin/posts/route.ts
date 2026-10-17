@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectToDatabase from '@/lib/mongodb';
 import Post from '@/models/Post';
+import { isCategory } from '@/lib/categories';
 
 export async function GET(request: Request) {
   try {
@@ -35,6 +36,9 @@ export async function POST(request: Request) {
     // Basic validation
     if (!body.title || !body.tag) {
       return NextResponse.json({ error: 'Title and Tag are required' }, { status: 400 });
+    }
+    if (!isCategory(body.tag)) {
+      return NextResponse.json({ error: `Unknown category: ${body.tag}` }, { status: 400 });
     }
 
     // Clean / auto-generate slug

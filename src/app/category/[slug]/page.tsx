@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { getPostsByTag } from '@/lib/posts'
+import { getPostsByCategory } from '@/lib/posts'
 import { postDateLabel } from '@/lib/date'
 import { notFound } from 'next/navigation'
 
@@ -15,10 +15,10 @@ interface CategoryPageProps {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const decodedSlug = decodeURIComponent(slug);
-  const posts = await getPostsByTag(decodedSlug);
+  const result = await getPostsByCategory(decodeURIComponent(slug));
+  if (!result) notFound();
 
-  const categoryName = decodedSlug.charAt(0).toUpperCase() + decodedSlug.slice(1).replace(/_/g, ' ');
+  const { name: categoryName, posts } = result;
 
   const featuredPost = posts[0];
   const otherPosts = posts.slice(1);
