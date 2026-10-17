@@ -10,6 +10,7 @@ import { ShareButtons } from "@/components/article/ShareButtons"
 import { CommentSection } from "@/components/article/CommentSection"
 import { headers } from "next/headers"
 import { AdBanner } from "@/components/ads/AdBanner"
+import { postDateLabel } from "@/lib/date"
 import type { Metadata } from "next"
 import { generateUniqueSlug } from "@/lib/slug"
 
@@ -167,7 +168,7 @@ export default async function ArticlePage({ params }: Props) {
                 By <Link href="#" className="text-zinc-950 dark:text-zinc-50 hover:text-red-700 transition-colors uppercase">{post.author || "The Ledger Editorial Board"}</Link>
               </span>
               <span className="block text-[12px] text-zinc-500 font-medium">
-                Published {post.timeAgo || new Date(post.createdAt || Date.now()).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                Published {postDateLabel(post)}
               </span>
             </div>
           </div>

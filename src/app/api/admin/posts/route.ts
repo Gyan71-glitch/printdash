@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
     await connectToDatabase();
     // Sort by most recently published
-    const posts = await Post.find({}).sort({ publishedAt: -1 });
+    const posts = await Post.find({}).sort({ createdAt: -1 });
 
     return NextResponse.json(posts);
   } catch (error: any) {
@@ -44,11 +44,7 @@ export async function POST(request: Request) {
       body.slug = body.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     }
 
-    const newPost = await Post.create({
-      ...body,
-      publishedAt: new Date(),
-      timeAgo: 'Just now',
-    });
+    const newPost = await Post.create(body);
 
     return NextResponse.json(newPost, { status: 201 });
   } catch (error: any) {

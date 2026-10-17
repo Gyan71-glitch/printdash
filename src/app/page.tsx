@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getPostsBySection, getUniqueTags } from "@/lib/posts";
+import { postDateLabel } from "@/lib/date";
 import { ArrowRight, Play, Eye, Flame } from "lucide-react";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { StockTicker } from "@/components/layout/StockTicker";
@@ -97,7 +98,7 @@ export default async function Home() {
                   <div className="flex items-center gap-4 text-[12px] font-bold uppercase tracking-widest text-zinc-400 border-t border-zinc-100 dark:border-zinc-900 pt-4">
                     <span className="text-zinc-900 dark:text-zinc-100">By {hero.author || "The Indianberg Staff"}</span>
                     <span>•</span>
-                    <span className="italic">{hero.timeAgo || "Updated moments ago"}</span>
+                    <span className="italic">{postDateLabel(hero)}</span>
                   </div>
                 </Link>
               </article>
@@ -228,7 +229,7 @@ export default async function Home() {
                         {post.title}
                       </h4>
                     </Link>
-                    <div className="mt-2 text-[9px] lg:text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{post.timeAgo}</div>
+                    <div className="mt-2 text-[9px] lg:text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{postDateLabel(post)}</div>
                   </div>
                   <div className="relative w-16 h-16 lg:w-20 lg:h-20 overflow-hidden bg-zinc-100 dark:bg-zinc-900 flex-shrink-0">
                     <Image
@@ -276,7 +277,7 @@ export default async function Home() {
                   {post.excerpt}
                 </p>
                 <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-900 text-[9px] lg:text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                  {(post.tag || "World").replace(/_/g, ' ')} • {post.timeAgo || "Updated"}
+                  {(post.tag || "World").replace(/_/g, ' ')} • {postDateLabel(post)}
                 </div>
               </article>
             ))}

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { getPostsByTag } from '@/lib/posts'
+import { postDateLabel } from '@/lib/date'
 import { notFound } from 'next/navigation'
 
 export const revalidate = 60; // Cache and regenerate every 60 seconds
@@ -74,7 +75,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   <div className="flex items-center text-[10px] md:text-[11px] font-black text-zinc-500 uppercase tracking-widest gap-4 border-t border-zinc-100 dark:border-zinc-900 pt-6">
                     <span className="text-zinc-900 dark:text-white">By {featuredPost.author || "Editorial Board"}</span>
                     <span className="text-zinc-300">|</span>
-                    <span>{featuredPost.timeAgo || "Updated moments ago"}</span>
+                    <span>{postDateLabel(featuredPost)}</span>
                   </div>
                 </div>
               </Link>
@@ -95,7 +96,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   </div>
                   <div className="flex-1 flex flex-col">
                     <span className="text-[9px] md:text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3">
-                      {(post.tag || categoryName).replace(/_/g, ' ')} • {post.timeAgo || "Recent Coverage"}
+                      {(post.tag || categoryName).replace(/_/g, ' ')} • {postDateLabel(post)}
                     </span>
                     <h3 className="font-serif text-[20px] lg:text-[24px] font-black leading-tight mb-4 group-hover:text-red-700 transition-colors tracking-tight">
                       {post.title}

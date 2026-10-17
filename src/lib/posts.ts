@@ -107,7 +107,7 @@ export async function searchPosts(query: string) {
         { tag: searchRegex },
         { content: searchRegex }
       ]
-    }).sort({ publishedAt: -1 }).lean();
+    }).sort({ createdAt: -1 }).lean();
     return JSON.parse(JSON.stringify(posts));
   } catch (e) {
     console.error("Error searching posts:", e);

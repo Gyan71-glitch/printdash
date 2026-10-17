@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { searchPosts, getAllPosts } from '@/lib/posts'
+import { postDateLabel } from '@/lib/date'
 
 export const dynamic = "force-dynamic";
 
@@ -67,7 +68,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 )}
                 <div className="mt-auto pt-4 flex items-center justify-between text-[11px] text-zinc-500 font-bold uppercase tracking-widest">
                   <span>{post.author || 'Editorial Board'}</span>
-                  <span>{post.timeAgo || new Date(post.publishedAt || post.createdAt).toLocaleDateString()}</span>
+                  <span>{postDateLabel(post)}</span>
                 </div>
               </Link>
             ))
