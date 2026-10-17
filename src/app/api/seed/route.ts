@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import connectToDatabase from '@/lib/mongodb';
 import Post from '@/models/Post';
 import { generateUniqueSlug, slugify } from '@/lib/slug';
@@ -236,6 +238,27 @@ export async function GET(request: Request) {
 
     await connectToDatabase();
 
+    if (getTagsOnly) {
+      const rawTags = await Post.distinct('tag') as string[];
+      const rawSections = await Post.distinct('section') as string[];
+      
+      const structuralSections = ['main feed', 'main_feed', 'news flash', 'featured', 'ledger', 'visual', 'post'];
+      
+      const allUnique = Array.from(new Set([...rawTags, ...rawSections]))
+        .filter(Boolean)
+        .filter(tag => !tag.startsWith('#'))
+        .filter(tag => !structuralSections.includes(tag.toLowerCase()));
+        
+      return NextResponse.json({ success: true, tags: allUnique });
+    }
+    
+    // Everything below writes to the database (the default action wipes every post),
+    // so it is admin-only, and the wipe-and-reseed never runs in production.
+    const session = await getServerSession(authOptions);
+    if (!session || ((session.user as any)?.role !== 'admin' && session.user?.email !== 'raiyn1279@gmail.com')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     if (action === 'backfill') {
       const postsWithoutSlug = await Post.find({
         $or: [
@@ -259,20 +282,10 @@ export async function GET(request: Request) {
       });
     }
 
-    if (getTagsOnly) {
-      const rawTags = await Post.distinct('tag') as string[];
-      const rawSections = await Post.distinct('section') as string[];
-      
-      const structuralSections = ['main feed', 'main_feed', 'news flash', 'featured', 'ledger', 'visual', 'post'];
-      
-      const allUnique = Array.from(new Set([...rawTags, ...rawSections]))
-        .filter(Boolean)
-        .filter(tag => !tag.startsWith('#'))
-        .filter(tag => !structuralSections.includes(tag.toLowerCase()));
-        
-      return NextResponse.json({ success: true, tags: allUnique });
+    if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ error: 'Reseeding is disabled in production' }, { status: 403 });
     }
-    
+
     // Clear old data
     await Post.deleteMany({});
     
