@@ -1,6 +1,6 @@
 import Post from '@/models/Post';
 import connectToDatabase from './mongodb';
-import { categoryFromSlug } from './categories';
+import { categoryFromSlug, LATEST_COUNT } from './categories';
 
 export async function getPostsBySection(section: string) {
   try {
@@ -13,19 +13,28 @@ export async function getPostsBySection(section: string) {
   }
 }
 
-// Posts for a category page: every post for "latest", otherwise exactly the posts
-// tagged with that category. Returns null for a slug that isn't a category.
+// The homepage "Latest" section: the newest uploads, skipping posts an editor opted out
+export async function getLatestPosts() {
+  try {
+    await connectToDatabase();
+    const posts = await Post.find({ showInLatest: { $ne: false } }).sort({ createdAt: -1 }).limit(LATEST_COUNT).lean();
+    return JSON.parse(JSON.stringify(posts));
+  } catch (e) {
+    console.error("Error fetching latest posts:", e);
+    return [];
+  }
+}
+
+// Posts for a category page: every post tagged with that category, newest first.
+// Returns null for a slug that isn't a category.
 export async function getPostsByCategory(slug: string) {
-  const s = slug.toLowerCase();
-  const name = s === 'latest' ? 'Latest' : categoryFromSlug(s);
+  const name = categoryFromSlug(slug);
   if (!name) return null;
 
   try {
     await connectToDatabase();
-    const query = name === 'Latest'
-      ? {}
-      // Tolerates case/whitespace variants of older free-text tags, e.g. "politics", "Economy "
-      : { tag: { $regex: `^\\s*${name}\\s*$`, $options: 'i' } };
+    // Tolerates case/whitespace variants of older free-text tags, e.g. "politics", "Economy "
+    const query = { tag: { $regex: `^\\s*${name}\\s*$`, $options: 'i' } };
     const posts = await Post.find(query).sort({ createdAt: -1 }).lean();
     return { name, posts: JSON.parse(JSON.stringify(posts)) };
   } catch (e) {

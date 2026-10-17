@@ -9,7 +9,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { useSession, signOut } from 'next-auth/react'
 import Image from 'next/image'
 import { useAuth } from '@/components/auth/AuthProvider'
-import { NAV_CATEGORIES } from '@/lib/categories'
+import { NAV_CATEGORIES, navHref } from '@/lib/categories'
 
 
 export function Navbar() {
@@ -196,7 +196,7 @@ export function Navbar() {
             {categories.map(cat => (
               <Link
                 key={cat}
-                href={`/category/${cat.toLowerCase().replace(/ /g, '_')}`}
+                href={navHref(cat)}
                 className="text-[12px] font-bold text-zinc-900 dark:text-zinc-100 hover:text-red-700 dark:hover:text-red-500 transition-colors whitespace-nowrap flex-shrink-0"
               >
                 {cat.replace(/_/g, ' ')}
@@ -253,7 +253,7 @@ export function Navbar() {
               {/* Center: Category pills on desktop */}
               <nav className="hidden xl:flex items-center gap-5">
                 {categories.slice(0, 7).map(cat => (
-                  <Link key={cat} href={`/category/${cat.toLowerCase().replace(/ /g, '_')}`} className="text-[12px] font-bold text-zinc-600 dark:text-zinc-400 hover:text-red-700 transition-colors">{cat.replace(/_/g, ' ')}</Link>
+                  <Link key={cat} href={navHref(cat)} className="text-[12px] font-bold text-zinc-600 dark:text-zinc-400 hover:text-red-700 transition-colors">{cat.replace(/_/g, ' ')}</Link>
                 ))}
                 <span className="text-zinc-300 dark:text-zinc-700">|</span>
               </nav>
@@ -341,7 +341,7 @@ export function Navbar() {
                   {categories.map((cat) => (
                     <motion.div key={cat} variants={{ hidden: { x: -20, opacity: 0 }, visible: { x: 0, opacity: 1 } }}>
                       <Link
-                        href={`/category/${cat.toLowerCase().replace(/ /g, '_')}`} onClick={() => setIsMenuOpen(false)}
+                        href={navHref(cat)} onClick={() => setIsMenuOpen(false)}
                         className="block py-3.5 border-b border-zinc-100 dark:border-zinc-900 font-sans text-[16px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-red-700 dark:hover:text-red-500 transition-colors"
                       >
                         {cat.replace(/_/g, ' ')}

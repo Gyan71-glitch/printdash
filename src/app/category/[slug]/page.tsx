@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getPostsByCategory } from '@/lib/posts'
 import { postDateLabel } from '@/lib/date'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 export const revalidate = 60; // Cache and regenerate every 60 seconds
 
@@ -15,7 +15,11 @@ interface CategoryPageProps {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const result = await getPostsByCategory(decodeURIComponent(slug));
+  const decodedSlug = decodeURIComponent(slug);
+  // "Latest" used to be a category page; it's now a homepage section
+  if (decodedSlug.toLowerCase() === 'latest') redirect('/#latest');
+
+  const result = await getPostsByCategory(decodedSlug);
   if (!result) notFound();
 
   const { name: categoryName, posts } = result;

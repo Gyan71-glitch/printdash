@@ -28,6 +28,7 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
     author: initialData?.author || '',
     imageUrl: initialData?.imageUrl || '',
     slug: initialData?.slug || '',
+    showInLatest: initialData?.showInLatest !== false,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -216,6 +217,19 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
                 <option value="weekend">Weekend Reads</option>
               </select>
             </div>
+
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.showInLatest}
+                onChange={e => setFormData(prev => ({ ...prev, showInLatest: e.target.checked }))}
+                className="mt-1 accent-red-600"
+              />
+              <span>
+                <span className="block text-sm font-semibold text-zinc-300">Show in Latest</span>
+                <span className="block text-xs text-zinc-500">The homepage Latest section shows the 6 newest posts with this ticked.</span>
+              </span>
+            </label>
 
             <div>
               <label className="block text-sm font-semibold text-zinc-400 mb-2">Author Name</label>
