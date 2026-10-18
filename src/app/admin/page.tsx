@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { postDateLabel } from '@/lib/date';
 import { FilePlus, Trash2, Pencil, Eye, RefreshCw, Search, SlidersHorizontal, X, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface Post {
@@ -10,6 +11,7 @@ interface Post {
   tag: string;
   author: string;
   publishedAt: string;
+  createdAt: string;
   imageUrl?: string;
   slug?: string;
 }
@@ -283,7 +285,7 @@ export default function AdminDashboard() {
                   </td>
                   <td className="px-6 py-4 hidden lg:table-cell text-zinc-400">{post.author || '—'}</td>
                   <td className="px-6 py-4 hidden lg:table-cell text-zinc-500 text-xs">
-                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                    {postDateLabel(post) || '—'}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">

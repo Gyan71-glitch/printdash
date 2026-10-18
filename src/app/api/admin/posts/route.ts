@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectToDatabase from '@/lib/mongodb';
 import Post from '@/models/Post';
+import { isCategory } from '@/lib/categories';
 
 export async function GET(request: Request) {
   try {
@@ -13,7 +14,7 @@ export async function GET(request: Request) {
 
     await connectToDatabase();
     // Sort by most recently published
-    const posts = await Post.find({}).sort({ publishedAt: -1 });
+    const posts = await Post.find({}).sort({ createdAt: -1 });
 
     return NextResponse.json(posts);
   } catch (error: any) {
@@ -36,6 +37,9 @@ export async function POST(request: Request) {
     if (!body.title || !body.tag) {
       return NextResponse.json({ error: 'Title and Tag are required' }, { status: 400 });
     }
+    if (!isCategory(body.tag)) {
+      return NextResponse.json({ error: `Unknown category: ${body.tag}` }, { status: 400 });
+    }
 
     // Clean / auto-generate slug
     if (body.slug) {
@@ -44,11 +48,7 @@ export async function POST(request: Request) {
       body.slug = body.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     }
 
-    const newPost = await Post.create({
-      ...body,
-      publishedAt: new Date(),
-      timeAgo: 'Just now',
-    });
+    const newPost = await Post.create(body);
 
     return NextResponse.json(newPost, { status: 201 });
   } catch (error: any) {

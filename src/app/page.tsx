@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getPostsBySection, getUniqueTags } from "@/lib/posts";
+import { getPostsBySection, getLatestPosts } from "@/lib/posts";
+import { postDateLabel } from "@/lib/date";
 import { ArrowRight, Play, Eye, Flame } from "lucide-react";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { StockTicker } from "@/components/layout/StockTicker";
@@ -17,7 +18,8 @@ export default async function Home() {
     ledger,
     visual,
     politics,
-    style
+    style,
+    latest
   ] = await Promise.all([
     getPostsBySection('news_flash'),
     getPostsBySection('main_feed'),
@@ -26,12 +28,13 @@ export default async function Home() {
     getPostsBySection('ledger'),
     getPostsBySection('visual'),
     getPostsBySection('politics'),
-    getPostsBySection('style')
+    getPostsBySection('style'),
+    getLatestPosts()
   ]);
 
   const hero = mainFeed[0];
   const centerStories = mainFeed.slice(1, 4);
-  const sideStories = newsFlash.slice(0, 8); // Use newsFlash to fill Latest Coverage
+  const sideStories = latest;
   // Ensure we always have 8 posts to fill the grid by padding with older mainFeed posts
   const ledgerStories = [...ledger, ...mainFeed.slice(11)].slice(0, 8);
 
@@ -49,7 +52,7 @@ export default async function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 border-b border-zinc-200 dark:border-zinc-800 pb-12 lg:pb-16">
 
           {/* LEFT: LATEST (Clean, minimalist list) */}
-          <div className="lg:col-span-3 space-y-8 lg:space-y-10 order-2 lg:order-1 lg:border-r lg:border-zinc-100 dark:lg:border-zinc-900 lg:pr-8">
+          <div id="latest" className="scroll-mt-32 lg:col-span-3 space-y-8 lg:space-y-10 order-2 lg:order-1 lg:border-r lg:border-zinc-100 dark:lg:border-zinc-900 lg:pr-8">
             <div className="flex items-center justify-between border-b border-black dark:border-white pb-2 mb-6">
               <h3 className="text-[10px] lg:text-[11px] font-black uppercase tracking-[0.2em] text-zinc-900 dark:text-zinc-100">Latest Coverage</h3>
             </div>
@@ -97,7 +100,7 @@ export default async function Home() {
                   <div className="flex items-center gap-4 text-[12px] font-bold uppercase tracking-widest text-zinc-400 border-t border-zinc-100 dark:border-zinc-900 pt-4">
                     <span className="text-zinc-900 dark:text-zinc-100">By {hero.author || "The Indianberg Staff"}</span>
                     <span>•</span>
-                    <span className="italic">{hero.timeAgo || "Updated moments ago"}</span>
+                    <span className="italic">{postDateLabel(hero)}</span>
                   </div>
                 </Link>
               </article>
@@ -228,7 +231,7 @@ export default async function Home() {
                         {post.title}
                       </h4>
                     </Link>
-                    <div className="mt-2 text-[9px] lg:text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{post.timeAgo}</div>
+                    <div className="mt-2 text-[9px] lg:text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{postDateLabel(post)}</div>
                   </div>
                   <div className="relative w-16 h-16 lg:w-20 lg:h-20 overflow-hidden bg-zinc-100 dark:bg-zinc-900 flex-shrink-0">
                     <Image
@@ -276,7 +279,7 @@ export default async function Home() {
                   {post.excerpt}
                 </p>
                 <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-900 text-[9px] lg:text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                  {(post.tag || "World").replace(/_/g, ' ')} • {post.timeAgo || "Updated"}
+                  {(post.tag || "World").replace(/_/g, ' ')} • {postDateLabel(post)}
                 </div>
               </article>
             ))}

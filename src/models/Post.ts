@@ -14,6 +14,7 @@ export interface IPost extends Document {
   url?: string;
   slug?: string;
   isLive?: boolean;
+  showInLatest?: boolean;
   description?: string;
   order?: number;
   createdAt: Date;
@@ -39,6 +40,8 @@ const PostSchema = new Schema<IPost>(
     url: { type: String, default: '#' },
     slug: { type: String, unique: true, sparse: true },
     isLive: { type: Boolean, default: false },
+    // Eligible for the homepage "Latest" section (the 6 newest eligible posts)
+    showInLatest: { type: Boolean, default: true },
     description: { type: String },
     order: { type: Number, default: 0 },
   },

@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { getPostsByTag } from '@/lib/posts'
-import { notFound } from 'next/navigation'
+import { getPostsByCategory } from '@/lib/posts'
+import { postDateLabel } from '@/lib/date'
+import { notFound, redirect } from 'next/navigation'
 
 export const revalidate = 60; // Cache and regenerate every 60 seconds
 
@@ -15,9 +16,13 @@ interface CategoryPageProps {
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
-  const posts = await getPostsByTag(decodedSlug);
+  // "Latest" used to be a category page; it's now a homepage section
+  if (decodedSlug.toLowerCase() === 'latest') redirect('/#latest');
 
-  const categoryName = decodedSlug.charAt(0).toUpperCase() + decodedSlug.slice(1).replace(/_/g, ' ');
+  const result = await getPostsByCategory(decodedSlug);
+  if (!result) notFound();
+
+  const { name: categoryName, posts } = result;
 
   const featuredPost = posts[0];
   const otherPosts = posts.slice(1);
@@ -74,7 +79,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   <div className="flex items-center text-[10px] md:text-[11px] font-black text-zinc-500 uppercase tracking-widest gap-4 border-t border-zinc-100 dark:border-zinc-900 pt-6">
                     <span className="text-zinc-900 dark:text-white">By {featuredPost.author || "Editorial Board"}</span>
                     <span className="text-zinc-300">|</span>
-                    <span>{featuredPost.timeAgo || "Updated moments ago"}</span>
+                    <span>{postDateLabel(featuredPost)}</span>
                   </div>
                 </div>
               </Link>
@@ -95,7 +100,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                   </div>
                   <div className="flex-1 flex flex-col">
                     <span className="text-[9px] md:text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3">
-                      {(post.tag || categoryName).replace(/_/g, ' ')} • {post.timeAgo || "Recent Coverage"}
+                      {(post.tag || categoryName).replace(/_/g, ' ')} • {postDateLabel(post)}
                     </span>
                     <h3 className="font-serif text-[20px] lg:text-[24px] font-black leading-tight mb-4 group-hover:text-red-700 transition-colors tracking-tight">
                       {post.title}

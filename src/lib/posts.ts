@@ -1,5 +1,6 @@
 import Post from '@/models/Post';
 import connectToDatabase from './mongodb';
+import { categoryFromSlug, LATEST_COUNT } from './categories';
 
 export async function getPostsBySection(section: string) {
   try {
@@ -12,58 +13,33 @@ export async function getPostsBySection(section: string) {
   }
 }
 
-// Maps nav category slugs to DB queries
-const CATEGORY_MAP: Record<string, { sections?: string[], keywords?: string[] }> = {
-  'latest':       { sections: ['main_feed', 'news_flash', 'ledger', 'opinions', 'politics', 'style'] },
-  'news':         { sections: ['main_feed', 'news_flash'] },
-  'markets':      { keywords: ['market', 'stock', 'nifty', 'sensex', 'trading', 'equity', 'mutual fund', 'economy', 'finance', 'rupee', 'rbi', 'sebi', 'gold', 'crude'] },
-  'brands story': { sections: ['ledger'], keywords: ['brand', 'company', 'corporate', 'startup', 'business', 'industry'] },
-  'politics':     { sections: ['politics'], keywords: ['politics', 'election', 'government', 'minister', 'parliament', 'bjp', 'congress', 'modi', 'rahul', 'party', 'vote', 'democracy'] },
-  'business':     { keywords: ['business', 'economy', 'gdp', 'growth', 'investment', 'trade', 'export', 'import', 'startup', 'entrepreneur', 'msme', 'industry', 'manufacturing'] },
-  'ipo':          { keywords: ['ipo', 'listing', 'shares', 'offer', 'allotment', 'grey market', 'subscription', 'nse', 'bse', 'primary market'] },
-  'opinions':     { sections: ['opinions'] },
-  'style':        { sections: ['style'], keywords: ['fashion', 'lifestyle', 'culture', 'art', 'style'] },
-};
-
-export async function getPostsByTag(tag: string) {
+// The homepage "Latest" section: the newest uploads, skipping posts an editor opted out
+export async function getLatestPosts() {
   try {
     await connectToDatabase();
-    const normalized = tag.replace(/_/g, ' ').toLowerCase().trim();
-    const mapping = CATEGORY_MAP[normalized];
-
-    if (mapping) {
-      const orConditions: any[] = [];
-
-      if (mapping.sections && mapping.sections.length > 0) {
-        orConditions.push({ section: { $in: mapping.sections } });
-      }
-
-      if (mapping.keywords && mapping.keywords.length > 0) {
-        const keywordRegex = mapping.keywords.join('|');
-        orConditions.push({ title: { $regex: keywordRegex, $options: 'i' } });
-        orConditions.push({ excerpt: { $regex: keywordRegex, $options: 'i' } });
-        orConditions.push({ content: { $regex: keywordRegex, $options: 'i' } });
-      }
-
-      // If no conditions built, return all (e.g. 'latest')
-      const query = orConditions.length > 0 ? { $or: orConditions } : {};
-      const posts = await Post.find(query).sort({ createdAt: -1 }).lean();
-      return JSON.parse(JSON.stringify(posts));
-    }
-
-    // Fallback: search by tag field or section field
-    const searchTag = tag.replace(/_/g, ' ');
-    const posts = await Post.find({
-      $or: [
-        { tag: { $regex: searchTag, $options: 'i' } },
-        { section: { $regex: searchTag, $options: 'i' } },
-        { title: { $regex: searchTag, $options: 'i' } }
-      ]
-    }).sort({ order: 1, createdAt: -1 }).lean();
+    const posts = await Post.find({ showInLatest: { $ne: false } }).sort({ createdAt: -1 }).limit(LATEST_COUNT).lean();
     return JSON.parse(JSON.stringify(posts));
   } catch (e) {
-    console.error("Error fetching posts by tag:", e);
+    console.error("Error fetching latest posts:", e);
     return [];
+  }
+}
+
+// Posts for a category page: every post tagged with that category, newest first.
+// Returns null for a slug that isn't a category.
+export async function getPostsByCategory(slug: string) {
+  const name = categoryFromSlug(slug);
+  if (!name) return null;
+
+  try {
+    await connectToDatabase();
+    // Tolerates case/whitespace variants of older free-text tags, e.g. "politics", "Economy "
+    const query = { tag: { $regex: `^\\s*${name}\\s*$`, $options: 'i' } };
+    const posts = await Post.find(query).sort({ createdAt: -1 }).lean();
+    return { name, posts: JSON.parse(JSON.stringify(posts)) };
+  } catch (e) {
+    console.error("Error fetching posts by category:", e);
+    return { name, posts: [] };
   }
 }
 
@@ -107,7 +83,7 @@ export async function searchPosts(query: string) {
         { tag: searchRegex },
         { content: searchRegex }
       ]
-    }).sort({ publishedAt: -1 }).lean();
+    }).sort({ createdAt: -1 }).lean();
     return JSON.parse(JSON.stringify(posts));
   } catch (e) {
     console.error("Error searching posts:", e);
